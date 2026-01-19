@@ -45,7 +45,7 @@ export function EventsGrid({ events }: { events: Event[] }) {
                                         ? 'border-green-500/30 text-green-400 bg-green-500/10'
                                         : 'border-red-500/30 text-red-400 bg-red-500/10'
                                     }`}>
-                                    {event.status === 'Open' ? 'RELAY ACTIVE' : 'OFFLINE'}
+                                    {event.status === 'Open' ? 'ACTIVE' : 'OFFLINE'}
                                 </span>
                             </div>
                             <div className="absolute bottom-4 left-4">
