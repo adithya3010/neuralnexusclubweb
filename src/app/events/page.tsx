@@ -3,8 +3,8 @@ import { EventsGrid } from "@/components/events-grid"
 
 export const dynamic = "force-dynamic"
 
-export default function EventsPage() {
-    const events = eventStore.getAll()
+export default async function EventsPage() {
+    const events = await eventStore.getAll()
 
     return (
         <div className="container mx-auto px-4 py-20">

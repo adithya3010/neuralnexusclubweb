@@ -1,13 +1,14 @@
 import { Link } from "lucide-react"
 import NextLink from "next/link"
-import { logout, deleteEventAction } from "../actions"
+import { logout } from "../actions"
 import { eventStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/glass-card"
 import { LogOut, Users, Calendar, AlertCircle } from "lucide-react"
+import { DeleteEventButton } from "@/components/admin/delete-event-button"
 
-export default function AdminDashboard() {
-    const events = eventStore.getAll()
+export default async function AdminDashboard() {
+    const events = await eventStore.getAll()
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -40,7 +41,7 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                         <p className="text-sm text-muted-foreground">Active Events</p>
-                        <p className="text-2xl font-bold">{events.filter(e => e.status === "Open").length}</p>
+                        <p className="text-2xl font-bold">{events.filter((e: any) => e.status === "Open").length}</p>
                     </div>
                 </GlassCard>
                 <GlassCard className="p-6 flex items-center space-x-4">
@@ -74,7 +75,7 @@ export default function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/10">
-                            {events.map((event) => (
+                            {events.map((event: any) => (
                                 <tr key={event.slug} className="hover:bg-white/5 transition-colors">
                                     <td className="p-4 font-medium">{event.title}</td>
                                     <td className="p-4 text-muted-foreground">{event.date}</td>
@@ -91,12 +92,7 @@ export default function AdminDashboard() {
                                         <Button variant="ghost" size="sm" className="h-8" asChild>
                                             <NextLink href={`/admin/events/${event.slug}/edit`}>Edit</NextLink>
                                         </Button>
-                                        <form action={deleteEventAction}>
-                                            <input type="hidden" name="slug" value={event.slug} />
-                                            <Button variant="ghost" size="sm" className="h-8 text-red-400 hover:text-red-300 hover:bg-red-500/10" type="submit">
-                                                Delete
-                                            </Button>
-                                        </form>
+                                        <DeleteEventButton slug={event.slug} />
                                     </td>
                                 </tr>
                             ))}

@@ -3,9 +3,10 @@ import { HomePage } from "@/components/home-page"
 
 export const dynamic = "force-dynamic"
 
-export default function Home() {
+export default async function Home() {
   // Get upcoming events for Highlights (Server Side)
-  const upcomingEvents = eventStore.getAll().filter(e => e.status === "Open").slice(0, 3)
+  const events = await eventStore.getAll()
+  const upcomingEvents = events.filter((e: any) => e.status === "Open").slice(0, 3)
 
   return <HomePage upcomingEvents={upcomingEvents} />
 }

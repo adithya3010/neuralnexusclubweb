@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react"
 
 export default async function EditEventPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const event = eventStore.getBySlug(slug)
+    const event = await eventStore.getBySlug(slug)
 
     if (!event) {
         return <div>Event not found</div>

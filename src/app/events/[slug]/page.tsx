@@ -7,7 +7,7 @@ import { Calendar, Clock, MapPin, Users, ArrowLeft } from "lucide-react"
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const event = eventStore.getBySlug(slug)
+    const event = await eventStore.getBySlug(slug)
 
     if (!event) {
         notFound()

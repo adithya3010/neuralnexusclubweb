@@ -46,24 +46,29 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         shortDescription: formData.get("shortDescription") as string,
         fullDescription: formData.get("fullDescription") as string,
         teamSize: formData.get("teamSize") as string,
+        maxTeamSize: parseInt(formData.get("maxTeamSize") as string) || 1,
     }
 
-    // Basic mock validation/update logic
-    eventStore.update(slug, updates)
+    try {
+        await eventStore.update(slug, updates)
 
-    revalidatePath("/admin/dashboard")
-    revalidatePath("/events")
-    revalidatePath(`/events/${slug}`)
-    revalidatePath("/")
+        revalidatePath("/admin/dashboard")
+        revalidatePath("/events")
+        revalidatePath(`/events/${slug}`)
+        revalidatePath("/")
 
-    redirect("/admin/dashboard")
+        redirect("/admin/dashboard")
+    } catch (error) {
+        console.error("Update failed:", error)
+        return { error: "Failed to update event." }
+    }
 }
 
 export async function createEventAction(prevState: any, formData: FormData): Promise<{ error: string }> {
     const title = formData.get("title") as string
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
 
-    if (eventStore.getBySlug(slug)) {
+    if (await eventStore.getBySlug(slug)) {
         return { error: "Event with this title already exists." }
     }
 
@@ -82,21 +87,33 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
         image: "/images/events/placeholder.jpg", // Default placeholder
     }
 
-    eventStore.add(newEvent)
+    try {
+        await eventStore.add(newEvent)
 
-    revalidatePath("/admin/dashboard")
-    revalidatePath("/events")
-    revalidatePath("/")
-
-    redirect("/admin/dashboard")
-}
-
-export async function deleteEventAction(formData: FormData) {
-    const slug = formData.get("slug") as string
-    if (slug) {
-        eventStore.delete(slug)
         revalidatePath("/admin/dashboard")
         revalidatePath("/events")
         revalidatePath("/")
+
+        redirect("/admin/dashboard")
+    } catch (error) {
+        console.error("Create failed:", error)
+        return { error: "Failed to create event." }
     }
+}
+
+export async function deleteEventAction(prevState: any, formData: FormData) {
+    const slug = formData.get("slug") as string
+    if (slug) {
+        try {
+            await eventStore.delete(slug)
+            revalidatePath("/admin/dashboard")
+            revalidatePath("/events")
+            revalidatePath("/")
+            return { error: "" }
+        } catch (error) {
+            console.error("Delete failed:", error)
+            return { error: "Failed to delete event." }
+        }
+    }
+    return { error: "Invalid request" }
 }
