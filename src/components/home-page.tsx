@@ -62,12 +62,12 @@ export function HomePage({ upcomingEvents }: { upcomingEvents: Event[] }) {
                         </span>
                     </motion.div> */}
 
-                    <h1 className="text-6xl md:text-8xl font-black tracking-tighter">
-                        <span className="block bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent mb-2">
-                            <TextReveal delay={0.2}>Neuro</TextReveal>
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter font-[family-name:var(--font-orbitron)]">
+                        <span className="inline-block bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+                            <TextReveal delay={0.2}>NEURO</TextReveal>
                         </span>
-                        <span className="block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent relative">
-                            <TextReveal delay={0.8}>Verse</TextReveal>
+                        <span className="inline-block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent relative ml-1">
+                            <TextReveal delay={0.8}>VERSE</TextReveal>
                             {/* Glow behind text */}
                             <div className="absolute inset-0 bg-primary/20 blur-[50px] -z-10" />
                         </span>

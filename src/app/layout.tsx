@@ -16,6 +16,12 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
+import { Orbitron } from "next/font/google";
+const orbitron = Orbitron({
+    variable: "--font-orbitron",
+    subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
     title: "NeuroVerse — The Premier AI/ML Event at CBIT",
     description: "The official website of NeuroVerse at CBIT. Join us to explore, innovate, and create with Artificial Intelligence in our flagship event.",
@@ -30,7 +36,7 @@ export default function RootLayout({
     return (
         <html lang="en" className="dark scroll-smooth">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground min-h-screen flex flex-col font-sans selection:bg-primary/30 selection:text-white relative`}
+                className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} antialiased bg-background text-foreground min-h-screen flex flex-col font-sans selection:bg-primary/30 selection:text-white relative`}
             >
                 <BackgroundGrid />
                 <SmoothScroll>
