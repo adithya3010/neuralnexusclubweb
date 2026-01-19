@@ -64,10 +64,10 @@ export function HomePage({ upcomingEvents }: { upcomingEvents: Event[] }) {
 
                     <h1 className="text-6xl md:text-8xl font-black tracking-tighter">
                         <span className="block bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent mb-2">
-                            <TextReveal delay={0.2}>Neural</TextReveal>
+                            <TextReveal delay={0.2}>Neuro</TextReveal>
                         </span>
                         <span className="block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent relative">
-                            <TextReveal delay={0.8}>Nexus</TextReveal>
+                            <TextReveal delay={0.8}>Verse</TextReveal>
                             {/* Glow behind text */}
                             <div className="absolute inset-0 bg-primary/20 blur-[50px] -z-10" />
                         </span>
@@ -136,23 +136,23 @@ export function HomePage({ upcomingEvents }: { upcomingEvents: Event[] }) {
 
             {/* Storytelling Section */}
             <StoryTellingSection />
-
-            {/* CTA Section */}
-            {/* <SectionWrapper className="container mx-auto px-4 text-center mb-20 relative z-10">
-                <GlassCard className="p-12 relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative z-10">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Shape the Future?</h2>
-                        <p className="text-muted-foreground max-w-xl mx-auto mb-8">
-                            Join hundreds of other students in the journey to master AI.
-                            Open to all branches and years.
-                        </p>
-                        <Button size="lg" className="rounded-full px-10 py-6 text-lg bg-white text-black hover:bg-white/90" asChild>
-                            <Link href="/join">Register Now</Link>
-                        </Button>
-                    </div>
-                </GlassCard>
-            </SectionWrapper> */}
         </div>
+        // {/* CTA Section */}
+        // {/* <SectionWrapper className="container mx-auto px-4 text-center mb-20 relative z-10">
+        //     <GlassCard className="p-12 relative overflow-hidden group">
+        //         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        //         <div className="relative z-10">
+        //             <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Shape the Future?</h2>
+        //             <p className="text-muted-foreground max-w-xl mx-auto mb-8">
+        //                 Join hundreds of other students in the journey to master AI.
+        //                 Open to all branches and years.
+        //             </p>
+        //             <Button size="lg" className="rounded-full px-10 py-6 text-lg bg-white text-black hover:bg-white/90" asChild>
+        //                 <Link href="/join">Register Now</Link>
+        //             </Button>
+        //         </div>
+        //     </GlassCard>
+        // </SectionWrapper> */}
+
     )
 }
