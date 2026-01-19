@@ -12,10 +12,10 @@ import { Button } from "@/components/ui/button"
 const navItems = [
     { name: "Home", href: "/" },
     { name: "Events", href: "/events" },
-    { name: "Team", href: "/team" },
+    { name: "Speakers", href: "/team" },
     { name: "Projects", href: "/projects" },
     // Achievements could be under About or separate. Let's stick to request.
-    { name: "Join", href: "/join" },
+    { name: "Register", href: "/join" },
 ]
 
 export function Navbar() {
@@ -33,7 +33,7 @@ export function Navbar() {
                 {/* Logo */}
                 <Link href="/" className="flex items-center space-x-2">
                     <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                        Neural Nexus
+                        NeuroVerse
                     </span>
                 </Link>
 
@@ -54,7 +54,7 @@ export function Navbar() {
                         </Link>
                     ))}
                     <Button asChild size="sm" variant="default">
-                        <Link href="/join">Join Club</Link>
+                        <Link href="/join">Register</Link>
                     </Button>
                 </nav>
 
@@ -92,12 +92,12 @@ export function Navbar() {
                                 </Link>
                             ))}
                             <Button asChild className="w-full">
-                                <Link href="/join">Join Club</Link>
+                                <Link href="/join">Register</Link>
                             </Button>
                         </nav>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </header>
+        </header >
     )
 }

@@ -11,10 +11,10 @@ export default function TeamPage() {
         <div className="container mx-auto px-4 py-20">
             <SectionWrapper className="text-center mb-16">
                 <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
-                    Meet The Team
+                    Meet The Speakers
                 </h1>
                 <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                    The minds behind Neural Nexus.
+                    The experts and organizers behind NeuroVerse Event.
                 </p>
             </SectionWrapper>
 

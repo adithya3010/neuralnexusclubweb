@@ -21,10 +21,10 @@ export default function AboutPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent mb-6"
                     >
-                        About Neural Nexus
+                        About NeuroVerse
                     </motion.h1>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                        The official Artificial Intelligence and Machine Learning Club of CBIT. We are generating the future, one node at a time.
+                        The official Artificial Intelligence and Machine Learning Event of CBIT. We are generating the future, one node at a time.
                     </p>
                 </SectionWrapper>
 
@@ -64,7 +64,7 @@ export default function AboutPage() {
                             <div>
                                 <h2 className="text-3xl font-bold mb-6">A Legacy of Innovation</h2>
                                 <p className="text-muted-foreground mb-4 leading-relaxed">
-                                    Founded in 2023, Neural Nexus started as a small study group of AI enthusiasts. Today, we are one of the most active technical clubs at CBIT, organizing city-wide hackathons and expert sessions.
+                                    Inaugurated in 2023, NeuroVerse started as a small gathering of AI enthusiasts. Today, we are one of the most active technical events at CBIT, organizing city-wide hackathons and expert sessions.
                                 </p>
                                 <p className="text-muted-foreground mb-6 leading-relaxed">
                                     Our members have secured internships at top tech giants, published research papers, and won national-level coding competitions.

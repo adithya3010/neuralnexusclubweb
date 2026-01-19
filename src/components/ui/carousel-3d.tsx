@@ -1,7 +1,6 @@
 "use client"
 
-import { motion, useMotionValue, useTransform, animate } from "framer-motion"
-import { useState, useRef, useEffect } from "react"
+import { useRef } from "react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -9,43 +8,40 @@ import { Calendar, Users, ArrowRight } from "lucide-react"
 import { Event } from "@/lib/data"
 
 export function Carousel3D({ events }: { events: Event[] }) {
-    const [width, setWidth] = useState(0)
-    const carousel = useRef<HTMLDivElement>(null)
-    const x = useMotionValue(0)
+    // Duplicate events to create seamless loop
+    const extendedEvents = [...events, ...events, ...events, ...events]
 
-    useEffect(() => {
-        if (carousel.current) {
-            setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth)
-        }
-    }, [events])
+    const containerRef = useRef<HTMLDivElement>(null)
+    const contentRef = useRef<HTMLDivElement>(null)
+
+    // Auto scroll logic can be done with CSS or Framer Motion. 
+    // Framer Motion gives us more control over pause state.
 
     return (
-        <div className="overflow-hidden cursor-grab active:cursor-grabbing py-10" ref={carousel}>
-            <motion.div
-                className="flex gap-10 px-10"
-                drag="x"
-                dragConstraints={{ right: 0, left: -width }}
-                style={{ x }}
-                whileTap={{ cursor: "grabbing" }}
+        <div
+            className="w-full overflow-hidden py-10 relative group/carousel"
+            ref={containerRef}
+        >
+            {/* Gradient Masks for fading edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+
+            <div
+                className="flex gap-8 px-4 w-max animate-marquee group-hover/carousel:[animation-play-state:paused]"
+                ref={contentRef}
             >
-                {events.map((event, index) => {
-                    return <CarouselCard key={event.slug} event={event} x={x} index={index} />
-                })}
-            </motion.div>
+                {extendedEvents.map((event, index) => (
+                    <CarouselCard key={`${event.slug}-${index}`} event={event} />
+                ))}
+            </div>
         </div>
     )
 }
 
-function CarouselCard({ event, x, index }: { event: Event, x: any, index: number }) {
-    // Simple 3D rotation based on drag, simplified for performance but keeping the "feel"
-    // Ideally we would calculate position relative to viewport center for true 3D carousel
-    // ensuring we don't re-introduce the scroll lag we just fixed.
+// Re-write using CSS animation for deeper control over play-state
+function CarouselCard({ event }: { event: Event }) {
     return (
-        <motion.div
-            className="min-w-[300px] md:min-w-[400px] h-[500px] relative"
-            whileHover={{ scale: 1.02, rotateY: 5, zIndex: 10 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
+        <div className="min-w-[300px] md:min-w-[400px] h-[500px] relative transition-transform duration-500">
             <GlassCard className="h-full flex flex-col overflow-hidden relative group border-white/10 bg-black/40 backdrop-blur-xl">
                 {/* Holographic Border overlay */}
                 <div className="absolute inset-0 border border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none" />
@@ -75,7 +71,7 @@ function CarouselCard({ event, x, index }: { event: Event, x: any, index: number
                         </h3>
                     </div>
 
-                    <p className="text-muted-foreground text-sm mb-6 line-clamp-3 leading-relaxed font-light border-l-2 border-white/10 pl-4">
+                    <p className="text-secondary text-sm mb-6 line-clamp-3 leading-relaxed font-light border-l-2 border-white/10 pl-4">
                         {event.shortDescription}
                     </p>
 
@@ -99,6 +95,6 @@ function CarouselCard({ event, x, index }: { event: Event, x: any, index: number
                     </Button>
                 </div>
             </GlassCard>
-        </motion.div >
+        </div>
     )
 }

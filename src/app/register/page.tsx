@@ -57,7 +57,7 @@ function RegisterContent() {
                 ctx?.drawImage(img, 0, 0)
                 const pngFile = canvas.toDataURL("image/png")
                 const downloadLink = document.createElement("a")
-                downloadLink.download = `NeuralNexus-${state.data?.event}-Pass.png`
+                downloadLink.download = `NeuroVerse-${state.data?.event}-Pass.png`
                 downloadLink.href = pngFile
                 downloadLink.click()
             }

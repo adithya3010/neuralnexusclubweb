@@ -154,7 +154,7 @@ export const projects = [
 
 export const achievements = [
     {
-        title: "Best Tech Club Award",
+        title: "Best Tech Event Award",
         year: "2024",
         description: " Recognized by CBIT for outstanding contributions to the student community."
     },
@@ -164,13 +164,13 @@ export const achievements = [
         description: "Our team 'Neural Net' won 1st place at Smart India Hackathon."
     },
     {
-        title: "100+ Events Conducted",
+        title: "100+ Sessions Conducted",
         year: "2023",
-        description: "Crossed a milestone of hosting over 100 technical and non-technical events."
+        description: "Crossed a milestone of hosting over 100 technical and non-technical sessions."
     },
     {
-        title: "Club Founded",
-        year: "2022",
-        description: "Neural Nexus was established to foster AI/ML learning."
+        title: "Event Founded",
+        year: "2023",
+        description: "NeuroVerse was established to foster AI/ML learning."
     }
 ]

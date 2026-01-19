@@ -56,12 +56,11 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         revalidatePath("/events")
         revalidatePath(`/events/${slug}`)
         revalidatePath("/")
-
-        redirect("/admin/dashboard")
     } catch (error) {
         console.error("Update failed:", error)
         return { error: "Failed to update event." }
     }
+    redirect("/admin/dashboard")
 }
 
 export async function createEventAction(prevState: any, formData: FormData): Promise<{ error: string }> {
@@ -93,12 +92,11 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
         revalidatePath("/admin/dashboard")
         revalidatePath("/events")
         revalidatePath("/")
-
-        redirect("/admin/dashboard")
     } catch (error) {
         console.error("Create failed:", error)
         return { error: "Failed to create event." }
     }
+    redirect("/admin/dashboard")
 }
 
 export async function deleteEventAction(prevState: any, formData: FormData) {

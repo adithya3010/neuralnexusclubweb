@@ -10,14 +10,40 @@ import { useState } from "react"
 
 export default function JoinPage() {
     const [submitted, setSubmitted] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Mock submission
-        setTimeout(() => {
-            setSubmitted(true)
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-        }, 1000)
+        setIsSubmitting(true)
+
+        const formData = {
+            name: (document.getElementById('name') as HTMLInputElement).value,
+            email: (document.getElementById('email') as HTMLInputElement).value,
+            year: (document.getElementById('year') as HTMLInputElement).value,
+            branch: (document.getElementById('branch') as HTMLInputElement).value,
+            reason: (document.getElementById('why') as HTMLTextAreaElement).value,
+        }
+
+        try {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+
+            if (res.ok) {
+                setSubmitted(true)
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+            } else {
+                const data = await res.json()
+                alert(`Registration failed: ${data.error || 'Please try again.'}`)
+            }
+        } catch (error) {
+            console.error(error)
+            alert('An error occurred.')
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     if (submitted) {
@@ -31,7 +57,7 @@ export default function JoinPage() {
                     </div>
                     <h2 className="text-3xl font-bold mb-4">Application Sent!</h2>
                     <p className="text-muted-foreground mb-6">
-                        Thanks for your interest in Neural Nexus. We'll review your application and get back to you soon.
+                        Thanks for your interest in NeuroVerse. We'll review your application and get back to you soon.
                     </p>
                     <Button onClick={() => setSubmitted(false)} variant="outline">Back to Form</Button>
                 </GlassCard>
@@ -43,10 +69,10 @@ export default function JoinPage() {
         <div className="container mx-auto px-4 py-20">
             <SectionWrapper className="text-center mb-16">
                 <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
-                    Join Neural Nexus
+                    Register for NeuroVerse
                 </h1>
                 <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                    Be part of the future. We are looking for passionate individuals to join our core committee and teams.
+                    Secure your spot. We are looking for passionate individuals to participate in our challenges and workshops.
                 </p>
             </SectionWrapper>
 
@@ -84,8 +110,8 @@ export default function JoinPage() {
                             />
                         </div>
 
-                        <Button type="submit" size="lg" className="w-full">
-                            Submit Application
+                        <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                            {isSubmitting ? 'Registering...' : 'Complete Registration'}
                         </Button>
                     </form>
                 </GlassCard>

@@ -12,7 +12,7 @@ const navItems = [
     { name: "Home", path: "/" },
     { name: "Events", path: "/events" },
     { name: "Achievements", path: "/achievements" },
-    { name: "About", path: "/about" },
+    { name: "About Event", path: "/about" },
 ]
 
 export function FloatingNavbar() {
@@ -48,7 +48,7 @@ export function FloatingNavbar() {
                             NN
                         </div>
                         <span className={cn("font-bold tracking-tight transition-all duration-300", scrolled ? "text-lg" : "text-xl")}>
-                            NeuralNexus
+                            NeuroVerse
                         </span>
                     </Link>
 
@@ -80,13 +80,7 @@ export function FloatingNavbar() {
 
                     {/* CTA & Mobile Toggle */}
                     <div className="flex items-center gap-2">
-                        <div className="hidden md:block">
-                            <Button size={scrolled ? "sm" : "default"} variant="secondary" className="rounded-full shadow-lg hover:shadow-primary/20 transition-all font-semibold" asChild>
-                                <Link href="/join">
-                                    Join Now <ArrowRight className={cn("ml-2 transition-all", scrolled ? "h-3 w-3" : "h-4 w-4")} />
-                                </Link>
-                            </Button>
-                        </div>
+
 
                         {/* Mobile Hamburger */}
                         <button
@@ -138,11 +132,7 @@ export function FloatingNavbar() {
                                     </motion.div>
                                 ))}
                                 <div className="h-px bg-white/10 my-2" />
-                                <Button size="lg" className="w-full rounded-xl font-bold bg-primary text-primary-foreground" asChild>
-                                    <Link href="/join" onClick={() => setMobileMenuOpen(false)}>
-                                        Join The Club
-                                    </Link>
-                                </Button>
+
                             </nav>
                         </motion.div>
                     </>

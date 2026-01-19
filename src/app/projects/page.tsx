@@ -13,7 +13,7 @@ export default function ProjectsPage() {
                     Our Projects
                 </h1>
                 <p className="text-muted-foreground text-lg">
-                    Innovations built by our club members.
+                    Innovations built by our event participants.
                 </p>
             </SectionWrapper>
 

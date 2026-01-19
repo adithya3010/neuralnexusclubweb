@@ -15,11 +15,11 @@ export function Footer() {
                     {/* Brand Section */}
                     <div className="space-y-4">
                         <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                            Neural Nexus
+                            NeuroVerse
                         </h2>
                         <p className="text-muted-foreground text-sm leading-relaxed">
-                            AI/ML Club of Chaitanya Bharathi Institute Of Technology.
-                            Empowering innovation through learning, coding, and collaboration.
+                            Premier AI/ML Event of Chaitanya Bharathi Institute Of Technology.
+                            Empowering innovation through competition, coding, and collaboration.
                         </p>
                     </div>
 
@@ -30,7 +30,7 @@ export function Footer() {
                             <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
                             <li><Link href="/about" className="hover:text-primary transition-colors">About</Link></li>
                             <li><Link href="/events" className="hover:text-primary transition-colors">Events</Link></li>
-                            <li><Link href="/join" className="hover:text-primary transition-colors">Contact</Link></li>
+                            <li><Link href="/join" className="hover:text-primary transition-colors">Register</Link></li>
                             <li><Link href="/admin/login" className="hover:text-primary transition-colors">Admin</Link></li>
                         </ul>
                     </div>
@@ -40,7 +40,7 @@ export function Footer() {
                         <h3 className="text-lg font-semibold text-white">Contact</h3>
                         <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                             <Mail className="h-4 w-4 text-primary" />
-                            <span>neuralnexus@cbit.ac.in</span>
+                            <span>neuroverse@cbit.ac.in</span>
                         </div>
                         <div className="flex space-x-4 pt-2">
                             {/* Socials Placeholder */}
@@ -72,7 +72,7 @@ export function Footer() {
                 </div>
 
                 <div className="border-t border-white/10 mt-12 pt-8 text-center text-sm text-muted-foreground">
-                    <p>&copy; {new Date().getFullYear()} Neural Nexus. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} NeuroVerse. All rights reserved.</p>
                 </div>
             </div>
         </footer>
