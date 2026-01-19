@@ -7,6 +7,8 @@ import { GlassCard } from "@/components/ui/glass-card"
 import { LogOut, Users, Calendar, AlertCircle } from "lucide-react"
 import { DeleteEventButton } from "@/components/admin/delete-event-button"
 
+export const dynamic = "force-dynamic"
+
 export default async function AdminDashboard() {
     const events = await eventStore.getAll()
 
