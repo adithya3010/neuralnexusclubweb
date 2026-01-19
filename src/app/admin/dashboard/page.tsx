@@ -19,11 +19,16 @@ export default async function AdminDashboard() {
                     <h1 className="text-3xl font-bold">Dashboard</h1>
                     <p className="text-muted-foreground">Welcome back, Admin.</p>
                 </div>
-                <form action={logout}>
-                    <Button variant="ghost" className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
-                        <LogOut className="mr-2 h-4 w-4" /> Logout
+                <div className="flex gap-4 items-center">
+                    <Button variant="outline" asChild className="border-purple-500/50 hover:bg-purple-500/10">
+                        <NextLink href="/admin/scan">Scan QR Code</NextLink>
                     </Button>
-                </form>
+                    <form action={logout}>
+                        <Button variant="ghost" className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
+                            <LogOut className="mr-2 h-4 w-4" /> Logout
+                        </Button>
+                    </form>
+                </div>
             </div>
 
             {/* Stats Cards ... (Keep existing) */}
