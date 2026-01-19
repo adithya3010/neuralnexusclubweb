@@ -113,20 +113,26 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
                 },
             });
 
-            const ticketUrl = `https://neuralnexusclubweb.vercel.app/ticket/${ticketId}`;
+            // QR Code Image URL (Public API)
+            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
 
             await transporter.sendMail({
                 from: `"NeuroVerse Event Team" <${process.env.SMTP_USER}>`,
                 to: leadEmail as string,
                 subject: `Registration Confirmed: ${eventSlug}`,
-                text: `Hello ${leadName},\n\nYou have successfully registered for ${eventSlug}.\n\nYour Ticket ID: ${ticketId}\nView Ticket: ${ticketUrl}\n\nNeuroVerse Team`,
+                text: `Hello ${leadName},\n\nYou have successfully registered for ${eventSlug}.\n\nYour Ticket ID: ${ticketId}\n\nPlease show the QR code attached for entry.\n\nNeuroVerse Team`,
                 html: `
                     <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
                         <h1 style="color: #7c3aed;">Registration Confirmed!</h1>
                         <p>Hi <strong>${leadName}</strong>,</p>
                         <p>You have successfully registered for <strong>${eventSlug}</strong>.</p>
                         <p><strong>Ticket ID:</strong> ${ticketId}</p>
-                        <p><a href="${ticketUrl}" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Ticket</a></p>
+                        
+                        <div style="margin: 20px 0;">
+                            <p>Here is your Entry Ticket:</p>
+                            <img src="${qrImageUrl}" alt="Ticket QR Code" style="border: 2px solid #eee; padding: 10px; border-radius: 8px;" />
+                        </div>
+                        
                         <hr />
                         <p>NeuroVerse Team</p>
                     </div>
@@ -137,11 +143,8 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
             // Fail if email doesn't work? Maybe just log for now to key flow moving.
         }
 
-        // Change QR Data to URL
-        // In dev, use localhost or relative. For QR, absolute is better.
-        // We'll trust the user to test this.
-        const origin = 'https://neuralnexusclubweb.vercel.app';
-        const qrData = `${origin}/ticket/${ticketId}`;
+        // Return only ticket ID for the frontend QR (so scanning it shows only ID)
+        const qrData = ticketId;
 
         return {
             success: true,
