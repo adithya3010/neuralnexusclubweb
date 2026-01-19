@@ -93,7 +93,7 @@ function CarouselCard({ event, x, index }: { event: Event, x: any, index: number
 
                     <Button variant="outline" className="w-full border-primary/50 text-primary hover:bg-primary hover:text-white transition-all duration-300 group/btn" asChild>
                         <Link href={`/events/${event.slug}`}>
-                            <span className="font-mono mr-2">[ACCESS]</span> View Protocol
+                            <span className="font-mono mr-2">[ACCESS]</span> Register Now
                             <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                         </Link>
                     </Button>

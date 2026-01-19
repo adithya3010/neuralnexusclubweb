@@ -75,7 +75,7 @@ export function EventsGrid({ events }: { events: Event[] }) {
 
                             <Button variant="default" className="w-full bg-white/5 hover:bg-primary hover:text-white border border-white/10 text-foreground transition-all duration-300 group/btn" asChild>
                                 <Link href={`/events/${event.slug}`}>
-                                    <span className="mr-2">Iniitialize</span>
+                                    <span className="mr-2">Register Now</span>
                                     <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                                 </Link>
                             </Button>
