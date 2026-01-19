@@ -1,5 +1,6 @@
 import { eventStore } from "@/lib/store"
 import { EventsGrid } from "@/components/events-grid"
+import { Event } from "@/lib/data"
 
 export const dynamic = "force-dynamic"
 
@@ -17,7 +18,7 @@ export default async function EventsPage() {
                 </p>
             </div>
 
-            <EventsGrid events={events} />
+            <EventsGrid events={events as unknown as Event[]} />
         </div>
     )
 }
