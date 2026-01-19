@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Strict Color Palette (HSL Values) */
+  --primary: 258 100% 76%;
+  /* #9D86FF */
+  --secondary: 255 98% 66%;
+  /* #7D52FD */
+  --background: 256 36% 10%;
+  /* #151022 */
+  --muted: 240 5% 82%;
+  /* #D0CFD3 */
+  --foreground: 0 0% 100%;
+  /* #FFFFFF */
+
+  /* Component Mappings */
+  --card: 256 36% 12%;
+  --card-foreground: 0 0% 100%;
+
+  --popover: 256 36% 10%;
+  --popover-foreground: 0 0% 100%;
+
+  --primary-foreground: 256 36% 10%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted-foreground: 240 5% 65%;
+
+  --accent: 255 98% 66%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 5% 82%;
+  --input: 256 36% 20%;
+  --ring: 258 100% 76%;
+
+  --radius: 0.5rem;
+}
+
+@theme {
+  --color-primary: hsl(var(--primary));
+  --color-secondary: hsl(var(--secondary));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+
+    to {
+      height: 0;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

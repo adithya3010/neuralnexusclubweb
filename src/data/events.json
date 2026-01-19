@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "hackathon",
+    "title": "Hackathon",
+    "date": "2026-02-18",
+    "time": "10:00 AM",
+    "venue": "D-block Seminar Hall",
+    "category": "Technical",
+    "status": "Open",
+    "shortDescription": "Showcase your research and ideas in AI/ML.",
+    "fullDescription": "It is a 24 hour Hackathon.\r\nCollaborate,Create ,Evolve",
+    "teamSize": "4",
+    "maxTeamSize": 4,
+    "image": "/images/events/placeholder.jpg"
+  },
+  {
+    "slug": "pixel-perfect-ai",
+    "title": "Pixel Perfect Ai",
+    "date": "2026-02-18",
+    "time": "10:00 AM",
+    "venue": "K-Block Lane",
+    "category": "Technical",
+    "status": "Open",
+    "shortDescription": "Ai based Event",
+    "fullDescription": "Full details will be shared near the venue",
+    "teamSize": "3",
+    "maxTeamSize": 3,
+    "image": "/images/events/placeholder.jpg"
+  }
+]
