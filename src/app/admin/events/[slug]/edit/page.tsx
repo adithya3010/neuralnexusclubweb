@@ -2,6 +2,7 @@ import { eventStore } from "@/lib/store"
 import { EditEventForm } from "./form"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { Event } from "@/lib/data"
 
 export default async function EditEventPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
@@ -21,7 +22,7 @@ export default async function EditEventPage({ params }: { params: Promise<{ slug
                 <h1 className="text-3xl font-bold">Edit Event: {event.title}</h1>
             </div>
 
-            <EditEventForm event={event} />
+            <EditEventForm event={event as unknown as Event} />
         </div>
     )
 }
