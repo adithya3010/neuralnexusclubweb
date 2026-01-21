@@ -5,6 +5,17 @@ import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Calendar, Clock, MapPin, Users, ArrowLeft } from "lucide-react"
 
+
+export const revalidate = 60
+
+export async function generateStaticParams() {
+    const events = await eventStore.getAll()
+    return events.map((event) => ({
+        slug: event.slug,
+    }))
+}
+
+
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
     const event = await eventStore.getBySlug(slug)
@@ -12,6 +23,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     if (!event) {
         notFound()
     }
+
 
     return (
         <div className="min-h-screen py-20 px-4 relative overflow-hidden">

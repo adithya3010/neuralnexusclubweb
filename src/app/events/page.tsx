@@ -2,7 +2,8 @@ import { eventStore } from "@/lib/store"
 import { EventsGrid } from "@/components/events-grid"
 import { Event } from "@/lib/data"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
+
 
 export default async function EventsPage() {
     const events = await eventStore.getAll()

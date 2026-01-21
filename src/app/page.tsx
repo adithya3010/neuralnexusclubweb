@@ -2,7 +2,8 @@ import { eventStore } from "@/lib/store"
 import { HomePage } from "@/components/home-page"
 import { Event } from "@/lib/data"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
+
 
 export default async function Home() {
   // Get upcoming events for Highlights (Server Side)
