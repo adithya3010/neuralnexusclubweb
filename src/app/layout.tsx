@@ -5,6 +5,7 @@ import { FloatingNavbar } from "@/components/layout/floating-navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BackgroundGrid } from "@/components/ui/background-grid";
 import { SmoothScroll } from "@/components/ui/smooth-scroll";
+import NeonCursor from "@/components/ui/neon-cursor";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -35,9 +36,12 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className="dark scroll-smooth">
+
+
             <body
                 className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} antialiased bg-background text-foreground min-h-screen flex flex-col font-sans selection:bg-primary/30 selection:text-white relative`}
             >
+                <NeonCursor />
                 <BackgroundGrid />
                 <SmoothScroll>
                     <FloatingNavbar />

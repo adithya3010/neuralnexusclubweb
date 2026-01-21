@@ -98,7 +98,7 @@ export function HomePage({ upcomingEvents }: { upcomingEvents: Event[] }) {
                             </Link>
                         </Button>
                         <Button size="lg" variant="outline" className="h-14 rounded-full px-10 text-lg border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 hover:border-primary/30 transition-all" asChild>
-                            <Link href="/join">Register Now</Link>
+                            <Link href="/achievements">Our Story</Link>
                         </Button>
                     </motion.div>
                 </div>
