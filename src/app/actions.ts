@@ -42,6 +42,7 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
         leadYear: formData.get("leadYear"),
         teamName: formData.get("teamName"),
         eventSlug: formData.get("eventSlug"),
+        utrId: formData.get("utrId"),
     }
 
     const validatedFields = formSchema.safeParse(rawData)
@@ -142,7 +143,8 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
                 "Lead Branch": leadBranch,
                 "Lead Year": leadYear,
                 Members: membersString,
-                "Screenshot": screenshotLink
+                "Screenshot": screenshotLink,
+                "UTR ID": (rawData.utrId as string) || ''
             });
         } catch (error: any) {
             console.error("Sheet Error:", error);

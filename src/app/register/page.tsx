@@ -177,17 +177,23 @@ function RegisterContent() {
                             </div>
                         </div>
 
-                        {/* Payment Screenshot */}
+                        {/* Payment Verification */}
                         <div className="space-y-4">
                             <h3 className="text-xl font-semibold border-b border-white/10 pb-2">Payment Verification</h3>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="utrId">UTR ID / Transaction ID</Label>
+                                <Input id="utrId" name="utrId" placeholder="e.g. 1234567890" required />
+                            </div>
+
                             <div className="space-y-2">
                                 <Label htmlFor="screenshot">Payment Screenshot</Label>
                                 {/* Input type="file" automatically works with Server Actions receiving FormData */}
-                                <Input 
-                                    id="screenshot" 
-                                    name="screenshot" 
-                                    type="file" 
-                                    accept="image/*" 
+                                <Input
+                                    id="screenshot"
+                                    name="screenshot"
+                                    type="file"
+                                    accept="image/*"
                                     className="cursor-pointer file:cursor-pointer file:text-primary file:font-semibold"
                                 />
                                 <p className="text-xs text-muted-foreground">Upload a screenshot of your payment or relevant verify doc.</p>
