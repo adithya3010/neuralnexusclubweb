@@ -38,8 +38,10 @@ const features = [
 
 import { NeuralNetwork3D } from "@/components/scene/neural-network-3d"
 import { TextReveal } from "@/components/ui/text-reveal"
+
 import { Carousel3D } from "@/components/ui/carousel-3d"
 import { StoryTellingSection } from "@/components/ui/story-telling-section"
+import { AchievementsSection } from "@/components/home/achievements-section"
 
 export function HomePage({ upcomingEvents }: { upcomingEvents: Event[] }) {
     return (
@@ -134,7 +136,14 @@ export function HomePage({ upcomingEvents }: { upcomingEvents: Event[] }) {
                 </div>
             </section>
 
-            {/* Storytelling Section */}
+            {/* Achievements Section with Tracing Beam */}
+            {/* <AchievementsSection /> */}
+
+            {/* Storytelling Section (Keep or Remove? User asked for scroll images/text. AchievementsSection covers that nature) */}
+            {/* Keeping it below or replacing? Let's keep both for content richness if needed, or comment out. 
+                User said "for achievements...". Let's add it BEFORE StoryTelling or REPLACE it.
+                I will add it BEFORE.
+            */}
             <StoryTellingSection />
         </div>
         // {/* CTA Section */}
