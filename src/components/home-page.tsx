@@ -137,7 +137,7 @@ export function HomePage({ upcomingEvents }: { upcomingEvents: Event[] }) {
             </section>
 
             {/* Achievements Section with Tracing Beam */}
-            <AchievementsSection />
+            {/* <AchievementsSection /> */}
 
             {/* Storytelling Section (Keep or Remove? User asked for scroll images/text. AchievementsSection covers that nature) */}
             {/* Keeping it below or replacing? Let's keep both for content richness if needed, or comment out. 
