@@ -4,6 +4,8 @@ import { z } from "zod"
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 import nodemailer from 'nodemailer';
+import { google } from "googleapis";
+import { Readable } from "stream";
 
 const formSchema = z.object({
     // Team Lead / Individual Details
@@ -40,6 +42,7 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
         leadYear: formData.get("leadYear"),
         teamName: formData.get("teamName"),
         eventSlug: formData.get("eventSlug"),
+        utrId: formData.get("utrId"),
     }
 
     const validatedFields = formSchema.safeParse(rawData)
@@ -60,6 +63,51 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
             email: formData.get(`member_${memberIndex}_email`),
         })
         memberIndex++
+    }
+
+    const screenshot = formData.get("screenshot") as File | null;
+    let screenshotLink = "";
+
+    if (screenshot && screenshot.size > 0) {
+        try {
+            const buffer = Buffer.from(await screenshot.arrayBuffer());
+            const stream = Readable.from(buffer);
+
+            const auth = new google.auth.OAuth2(
+                process.env.GOOGLE_CLIENT_ID,
+                process.env.GOOGLE_CLIENT_SECRET,
+                'http://localhost:3000/oauth2callback' // Not strictly used for server-side auth but required field
+            );
+            auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+
+            const drive = google.drive({ version: 'v3', auth });
+
+
+
+            const response = await drive.files.create({
+                requestBody: {
+                    name: `${leadName}_${eventSlug}_Payment.png`, // Standardize name
+                    parents: process.env.GOOGLE_DRIVE_FOLDER_ID ? [process.env.GOOGLE_DRIVE_FOLDER_ID] : [],
+                },
+                media: {
+                    mimeType: screenshot.type,
+                    body: stream,
+                },
+                fields: 'id, webViewLink, webContentLink',
+            });
+
+            screenshotLink = response.data.webViewLink || response.data.webContentLink || "";
+            // Optional: Make public
+            /*
+            await drive.permissions.create({
+                fileId: response.data.id!,
+                requestBody: { role: 'reader', type: 'anyone' },
+            });
+            */
+        } catch (error) {
+            console.error("Drive Upload Error:", error);
+            // We continue even if upload fails, but log it.
+        }
     }
 
     try {
@@ -94,7 +142,9 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
                 "Lead Phone": leadPhone,
                 "Lead Branch": leadBranch,
                 "Lead Year": leadYear,
-                Members: membersString
+                Members: membersString,
+                "Screenshot": screenshotLink,
+                "UTR ID": (rawData.utrId as string) || ''
             });
         } catch (error: any) {
             console.error("Sheet Error:", error);
