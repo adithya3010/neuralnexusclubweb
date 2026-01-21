@@ -1,5 +1,6 @@
 "use client"
 
+
 import { useState, useEffect, useActionState } from "react"
 import { useSearchParams } from "next/navigation"
 import { useFormStatus } from "react-dom"
@@ -168,12 +169,28 @@ function RegisterContent() {
                             </div>
                         </div>
 
-                        {/* Team Info */}
                         <div className="space-y-4">
                             <h3 className="text-xl font-semibold border-b border-white/10 pb-2">Team Details</h3>
                             <div className="space-y-2">
                                 <Label htmlFor="teamName">Team Name (Optional)</Label>
                                 <Input id="teamName" name="teamName" placeholder="Neural Ninjas" />
+                            </div>
+                        </div>
+
+                        {/* Payment Screenshot */}
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-semibold border-b border-white/10 pb-2">Payment Verification</h3>
+                            <div className="space-y-2">
+                                <Label htmlFor="screenshot">Payment Screenshot</Label>
+                                {/* Input type="file" automatically works with Server Actions receiving FormData */}
+                                <Input 
+                                    id="screenshot" 
+                                    name="screenshot" 
+                                    type="file" 
+                                    accept="image/*" 
+                                    className="cursor-pointer file:cursor-pointer file:text-primary file:font-semibold"
+                                />
+                                <p className="text-xs text-muted-foreground">Upload a screenshot of your payment or relevant verify doc.</p>
                             </div>
                         </div>
 
