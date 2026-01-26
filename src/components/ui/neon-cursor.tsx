@@ -83,7 +83,8 @@ const NeonCursor = () => {
     const [isVisible, setIsVisible] = useState(false);
     useEffect(() => {
         // Small delay to prevent hydration mismatch or check for touch
-        setIsVisible(true);
+        const timer = setTimeout(() => setIsVisible(true), 0);
+        return () => clearTimeout(timer);
     }, []);
 
     if (!isVisible) return null;
@@ -121,7 +122,6 @@ const NeonCursor = () => {
                     stiffness: 200,
                     mass: 0.8,
                 }}
-                // @ts-ignore
                 initial={false}
             />
 
@@ -139,7 +139,6 @@ const NeonCursor = () => {
                     stiffness: 150,
                     mass: 1,
                 }}
-                // @ts-ignore
                 initial={false}
             />
         </div>

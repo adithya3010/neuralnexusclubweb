@@ -11,6 +11,7 @@ export interface Event {
     image: string // Ensure this points to a valid image path or placeholder
     status: "Open" | "Closed"
     category: "Technical" | "Non-Technical" | "Hackathon" | "Workshop"
+    showOnHighlights?: boolean
 }
 
 export const events: Event[] = [

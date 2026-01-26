@@ -1,15 +1,15 @@
 "use client"
 
-import { useRef, useMemo } from "react"
+import { useRef, useState, useEffect, ReactNode } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
 import { Points, PointMaterial, Line } from "@react-three/drei"
 import * as THREE from "three"
 
 function Particles({ count = 50 }) {
     const points = useRef<THREE.Points>(null!)
+    const [particlesPosition, setParticlesPosition] = useState<Float32Array | null>(null)
 
-    // Generate random positions
-    const particlesPosition = useMemo(() => {
+    useEffect(() => {
         const positions = new Float32Array(count * 3)
         for (let i = 0; i < count; i++) {
             const x = (Math.random() - 0.5) * 10
@@ -17,7 +17,7 @@ function Particles({ count = 50 }) {
             const z = (Math.random() - 0.5) * 10
             positions.set([x, y, z], i * 3)
         }
-        return positions
+        setTimeout(() => setParticlesPosition(positions), 0)
     }, [count])
 
     useFrame((state) => {
@@ -26,6 +26,8 @@ function Particles({ count = 50 }) {
         points.current.rotation.x = state.clock.getElapsedTime() * 0.1
         points.current.rotation.y = state.clock.getElapsedTime() * 0.05
     })
+
+    if (!particlesPosition) return null
 
     return (
         <Points ref={points} positions={particlesPosition} stride={3} frustumCulled={false}>
@@ -42,8 +44,10 @@ function Particles({ count = 50 }) {
 }
 
 function Connections({ count = 30 }) {
-    const lines = useMemo(() => {
-        const lineComponents = []
+    const [lines, setLines] = useState<ReactNode[]>([])
+
+    useEffect(() => {
+        const lineComponents: ReactNode[] = []
         for (let i = 0; i < count; i++) {
             // Random endpoints for mockup visual lines
             const start = [
@@ -68,7 +72,7 @@ function Connections({ count = 30 }) {
                 />
             )
         }
-        return lineComponents
+        setTimeout(() => setLines(lineComponents), 0)
     }, [count])
 
     const group = useRef<THREE.Group>(null!)

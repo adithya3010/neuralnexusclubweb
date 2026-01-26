@@ -127,7 +127,7 @@ export function HomePage({ upcomingEvents }: { upcomingEvents: Event[] }) {
                     <h2 className="text-4xl font-bold mb-2">
                         <TextReveal>Highlights</TextReveal>
                     </h2>
-                    <p className="text-muted-foreground">Upcoming events you don't want to miss.</p>
+                    <p className="text-muted-foreground">Upcoming events you don&apos;t want to miss.</p>
                 </div>
 
                 {/* Full Width Carousel */}

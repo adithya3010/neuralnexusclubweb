@@ -15,9 +15,10 @@ function ImageSide({ images }: { images: string[] }) {
         <div className="relative h-64 md:h-96 w-full rounded-xl overflow-hidden shadow-2xl border border-white/10 group">
             {/* Simple single image for MVP, user can update images later */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-            <img
+            <Image
                 src={images[0] || "/placeholder.jpg"}
                 alt="Achievement"
+                fill
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             {/* Badge/Overlay if needed */}
@@ -35,7 +36,7 @@ const dummyContent = [
                     Competing against 500+ teams nationwide, we built a generative AI solution for optimizing renewable energy grids.
                 </p>
                 <p className="mt-4">
-                    This victory showcased our club's strength in problem-solving and rapid prototyping under pressure.
+                    This victory showcased our club&apos;s strength in problem-solving and rapid prototyping under pressure.
                 </p>
             </>
         ),
@@ -48,7 +49,7 @@ const dummyContent = [
         description: (
             <>
                 <p>
-                    Our research wing published a groundbreaking paper on "Efficient Transformer Architectures for Edge Devices" at the
+                    Our research wing published a groundbreaking paper on &quot;Efficient Transformer Architectures for Edge Devices&quot; at the
                     <span className="text-secondary font-bold"> International Conference on Machine Learning (ICML)</span>.
                 </p>
                 <p className="mt-4">

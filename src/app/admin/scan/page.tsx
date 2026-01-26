@@ -55,7 +55,7 @@ export default function AdminScanPage() {
                     <div id="reader" className="overflow-hidden rounded-lg mb-6 bg-black" />
 
                     <p className="text-sm text-muted-foreground mb-4">
-                        Point camera at a participant's QR code.
+                        Point camera at a participant&apos;s QR code.
                     </p>
 
                     <Button variant="outline" asChild>

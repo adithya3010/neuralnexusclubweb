@@ -42,15 +42,15 @@ export function EventsGrid({ events }: { events: Event[] }) {
                             <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
                             <div className="absolute top-4 right-4">
                                 <span className={`px-2 py-1 text-[10px] font-mono tracking-widest border rounded-sm uppercase ${event.status === 'Open'
-                                        ? 'border-green-500/30 text-green-400 bg-green-500/10'
-                                        : 'border-red-500/30 text-red-400 bg-red-500/10'
+                                    ? 'border-green-500/30 text-green-400 bg-green-500/10'
+                                    : 'border-red-500/30 text-red-400 bg-red-500/10'
                                     }`}>
                                     {event.status === 'Open' ? 'ACTIVE' : 'OFFLINE'}
                                 </span>
                             </div>
                             <div className="absolute bottom-4 left-4">
                                 <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                                    // {event.category}
+                                    {"//"} {event.category}
                                 </span>
                             </div>
                         </div>

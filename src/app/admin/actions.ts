@@ -2,6 +2,9 @@
 
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { GoogleSpreadsheet } from 'google-spreadsheet';
+import { JWT } from 'google-auth-library';
+
 
 export async function login(prevState: any, formData: FormData) {
     const username = formData.get("username")
@@ -47,6 +50,7 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         fullDescription: formData.get("fullDescription") as string,
         teamSize: formData.get("teamSize") as string,
         maxTeamSize: parseInt(formData.get("maxTeamSize") as string) || 1,
+        showOnHighlights: formData.get("showOnHighlights") === "on",
     }
 
     try {
@@ -84,6 +88,7 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
         teamSize: formData.get("teamSize") as string,
         maxTeamSize: parseInt(formData.get("maxTeamSize") as string) || 1,
         image: "/images/events/placeholder.jpg", // Default placeholder
+        showOnHighlights: formData.get("showOnHighlights") === "on",
     }
 
     try {
@@ -114,4 +119,52 @@ export async function deleteEventAction(prevState: any, formData: FormData) {
         }
     }
     return { error: "Invalid request" }
+}
+
+export async function markAttendanceAction(ticketId: string, attendanceStatus: string) {
+    // 1. Verify Admin Session
+    const cookieStore = await cookies()
+    const isAdmin = cookieStore.get("admin_session")?.value === "true"
+
+    if (!isAdmin) {
+        return { error: "Unauthorized" }
+    }
+
+    try {
+        // 2. Load Google Sheet
+        const key = process.env.GOOGLE_PRIVATE_KEY || '';
+        const cleanedKey = key.replace(/\\n/g, '\n').replace(/"/g, '');
+
+        const serviceAccountAuth = new JWT({
+            email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+            key: cleanedKey,
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+
+        const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID as string, serviceAccountAuth);
+        await doc.loadInfo();
+        const sheet = doc.sheetsByIndex[0];
+        const rows = await sheet.getRows();
+
+        // 3. Find Ticket Row
+        const ticketRow = rows.find(row => row.get("Ticket ID") === ticketId);
+
+        if (!ticketRow) {
+            return { error: "Ticket not found" }
+        }
+
+        // 4. Update Attendance
+        ticketRow.set("Attended", "Yes")
+        ticketRow.set("Attended At", new Date().toLocaleString())
+        ticketRow.set("Member Attendance", attendanceStatus)
+
+        await ticketRow.save();
+
+        revalidatePath(`/ticket/${ticketId}`)
+        return { success: true }
+
+    } catch (error) {
+        console.error("Attendance Mark Error:", error)
+        return { error: "Failed to update attendance." }
+    }
 }

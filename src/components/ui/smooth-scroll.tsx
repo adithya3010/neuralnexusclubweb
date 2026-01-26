@@ -21,7 +21,8 @@ export function SmoothScroll({ children }: { children?: React.ReactNode }) {
             touchMultiplier: 2,
         })
 
-        setLenis(lenisInstance)
+        // Use setTimeout to avoid synchronous setState warning
+        setTimeout(() => setLenis(lenisInstance), 0)
 
         function raf(time: number) {
             lenisInstance.raf(time)

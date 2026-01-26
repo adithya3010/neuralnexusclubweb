@@ -2,9 +2,13 @@ import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
-import { BadgeCheck, XCircle } from 'lucide-react';
+import { XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { cookies } from "next/headers";
+import { AdminTicketManager } from "@/components/admin-ticket-manager";
+import { TicketDetailsCard } from "@/components/ticket-details-card";
+import { TicketExpiredView } from "@/components/ticket-expired-view";
 
 async function getTicketDetails(id: string) {
     try {
@@ -35,6 +39,9 @@ async function getTicketDetails(id: string) {
             team: ticketRow.get("Team Name"),
             members: ticketRow.get("Members"), // "Name (Roll), Name (Roll)"
             timestamp: ticketRow.get("Timestamp"),
+            attended: ticketRow.get("Attended"),
+            attendedAt: ticketRow.get("Attended At"),
+            memberAttendance: ticketRow.get("Member Attendance"),
         };
     } catch (error) {
         console.error("Ticket Fetch Error:", error);
@@ -65,68 +72,41 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
         )
     }
 
-    // Parse members string: "Name (Roll), Name (Roll)"
-    const membersList = ticket.members
-        ? ticket.members.split(',').map((m: string) => m.trim()).filter(Boolean)
-        : [];
+    // Check if user is admin
+    const cookieStore = await cookies()
+    const isAdmin = cookieStore.get("admin_session")?.value === "true"
 
     return (
         <div className="container mx-auto px-4 py-20 flex justify-center items-center min-h-screen">
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-            <SectionWrapper className="relative z-10 w-full max-w-md">
-                <GlassCard className="p-8 text-center border-green-500/50 shadow-[0_0_50px_-12px_rgba(34,197,94,0.2)]">
-                    <div className="flex justify-center mb-6">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-green-500 blur-xl opacity-20 rounded-full" />
-                            <BadgeCheck className="h-24 w-24 text-green-500 relative z-10" />
-                        </div>
+            <SectionWrapper className="relative z-10 w-full max-w-md flex flex-col items-center">
+
+                {/* Admin View Logic */}
+                {isAdmin ? (
+                    ticket.attended === "Yes" ? (
+                        <TicketExpiredView
+                            attendedAt={ticket.attendedAt}
+                            memberAttendance={ticket.memberAttendance}
+                        />
+                    ) : (
+                        <AdminTicketManager ticket={ticket} />
+                    )
+                ) : (
+                    /* Public/Participant View */
+                    <TicketDetailsCard ticket={ticket} />
+                )}
+
+                {/* Admin Quick Link back to scanner */}
+                {isAdmin && (
+                    <div className="mt-8">
+                        <Button variant="ghost" asChild className="text-muted-foreground hover:text-white">
+                            <Link href="/admin/scan">
+                                Return to Scanner
+                            </Link>
+                        </Button>
                     </div>
+                )}
 
-                    <h1 className="text-2xl font-bold text-green-400 mb-1">VERIFIED TICKET</h1>
-                    <p className="text-xs text-muted-foreground uppercase tracking-widest mb-8">{ticket.id}</p>
-
-                    <div className="space-y-4 text-left bg-white/5 p-6 rounded-lg mb-8">
-                        <div>
-                            <p className="text-xs text-muted-foreground uppercase">Participant</p>
-                            <p className="text-xl font-bold">{ticket.name}</p>
-                        </div>
-                        <div>
-                            <p className="text-xs text-muted-foreground uppercase">Roll Number</p>
-                            <p className="text-lg">{ticket.roll}</p>
-                        </div>
-                        <div className="h-px bg-white/10 my-2" />
-                        <div>
-                            <p className="text-xs text-muted-foreground uppercase">Event</p>
-                            <p className="text-lg font-medium text-primary">{ticket.event}</p>
-                        </div>
-                        <div>
-                            <p className="text-xs text-muted-foreground uppercase">Team</p>
-                            <p className="text-lg">{ticket.team}</p>
-                        </div>
-
-                        {membersList.length > 0 && (
-                            <>
-                                <div className="h-px bg-white/10 my-2" />
-                                <div>
-                                    <p className="text-xs text-muted-foreground uppercase mb-1">Team Members</p>
-                                    <ul className="text-sm space-y-1 text-muted-foreground">
-                                        {membersList.map((member: string, i: number) => (
-                                            <li key={i}>• {member}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </>
-                        )}
-                    </div>
-
-                    <p className="text-xs text-muted-foreground mb-6">
-                        Registered on {new Date(ticket.timestamp).toLocaleDateString()}
-                    </p>
-
-                    <Button className="w-full" asChild>
-                        <Link href="/">Back to Event</Link>
-                    </Button>
-                </GlassCard>
             </SectionWrapper>
         </div>
     )

@@ -23,6 +23,7 @@ model Event {
   image            String
   status           String
   category         String
+  showOnHighlights Boolean  @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

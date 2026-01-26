@@ -57,7 +57,7 @@ export default function JoinPage() {
                     </div>
                     <h2 className="text-3xl font-bold mb-4">Application Sent!</h2>
                     <p className="text-muted-foreground mb-6">
-                        Thanks for your interest in NeuroVerse. We'll review your application and get back to you soon.
+                        Thanks for your interest in NeuroVerse. We&apos;ll review your application and get back to you soon.
                     </p>
                     <Button onClick={() => setSubmitted(false)} variant="outline">Back to Form</Button>
                 </GlassCard>

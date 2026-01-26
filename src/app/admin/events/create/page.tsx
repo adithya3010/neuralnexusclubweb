@@ -86,6 +86,11 @@ export default function CreateEventPage() {
                         </select>
                     </div>
 
+                    <div className="flex items-center space-x-2">
+                        <input type="checkbox" id="showOnHighlights" name="showOnHighlights" className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
+                        <Label htmlFor="showOnHighlights">Show on Highlights</Label>
+                    </div>
+
                     <div className="space-y-2">
                         <Label htmlFor="shortDescription">Short Description</Label>
                         <Input id="shortDescription" name="shortDescription" placeholder="Brief summary..." required />
