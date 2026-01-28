@@ -130,7 +130,7 @@ export default function TeamPage() {
                         </div>
                     </div>
 
-                    <InfiniteMovingCards items={coreCommittee} direction="left" speed="slow">
+                    <InfiniteMovingCards direction="left" speed="slow">
                         {coreCommittee.map((member, i) => (
                             <MemberCard key={i} member={member} className="border-primary/20 bg-primary/5" />
                         ))}
