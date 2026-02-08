@@ -12,6 +12,8 @@ export interface Event {
     status: "Open" | "Closed"
     category: "Technical" | "Non-Technical" | "Hackathon" | "Workshop"
     showOnHighlights?: boolean
+    registrationType?: 'website' | 'google_form'
+    googleFormUrl?: string
 }
 
 export const events: Event[] = [
@@ -41,7 +43,9 @@ export const events: Event[] = [
         maxTeamSize: 4,
         image: "/images/events/project-expo.jpg",
         status: "Open",
-        category: "Technical"
+        category: "Technical",
+        registrationType: "google_form",
+        googleFormUrl: "https://docs.google.com/forms/u/0/" // Placeholder, replace with actual if provided
     },
     {
         slug: "hackathon",

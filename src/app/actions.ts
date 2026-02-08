@@ -32,85 +32,75 @@ export type RegistrationState = {
 }
 
 export async function registerForEvent(prevState: RegistrationState, formData: FormData): Promise<RegistrationState> {
-    // ... (keep extraction logic)
-    const rawData = {
-        leadName: formData.get("leadName"),
-        leadEmail: formData.get("leadEmail"),
-        leadRoll: formData.get("leadRoll"),
-        leadPhone: formData.get("leadPhone"),
-        leadBranch: formData.get("leadBranch"),
-        leadYear: formData.get("leadYear"),
-        teamName: formData.get("teamName"),
-        eventSlug: formData.get("eventSlug"),
-        utrId: formData.get("utrId"),
-    }
-
-    const validatedFields = formSchema.safeParse(rawData)
-
-    if (!validatedFields.success) {
-        console.error(validatedFields.error)
-        return { error: "Invalid lead details. Please check your inputs." }
-    }
-
-    const { leadName, leadEmail, leadRoll, leadPhone, leadBranch, leadYear, teamName, eventSlug } = validatedFields.data
-
-    const members = []
-    let memberIndex = 0
-    while (formData.get(`member_${memberIndex}_name`)) {
-        members.push({
-            name: formData.get(`member_${memberIndex}_name`),
-            roll: formData.get(`member_${memberIndex}_roll`),
-            email: formData.get(`member_${memberIndex}_email`),
-        })
-        memberIndex++
-    }
-
-    const screenshot = formData.get("screenshot") as File | null;
-    let screenshotLink = "";
-
-    if (screenshot && screenshot.size > 0) {
-        try {
-            const buffer = Buffer.from(await screenshot.arrayBuffer());
-            const stream = Readable.from(buffer);
-
-            const auth = new google.auth.OAuth2(
-                process.env.GOOGLE_CLIENT_ID,
-                process.env.GOOGLE_CLIENT_SECRET,
-                'http://localhost:3000/oauth2callback' // Not strictly used for server-side auth but required field
-            );
-            auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
-
-            const drive = google.drive({ version: 'v3', auth });
-
-
-
-            const response = await drive.files.create({
-                requestBody: {
-                    name: `${leadName}_${eventSlug}_Payment.png`, // Standardize name
-                    parents: process.env.GOOGLE_DRIVE_FOLDER_ID ? [process.env.GOOGLE_DRIVE_FOLDER_ID] : [],
-                },
-                media: {
-                    mimeType: screenshot.type,
-                    body: stream,
-                },
-                fields: 'id, webViewLink, webContentLink',
-            });
-
-            screenshotLink = response.data.webViewLink || response.data.webContentLink || "";
-            // Optional: Make public
-            /*
-            await drive.permissions.create({
-                fileId: response.data.id!,
-                requestBody: { role: 'reader', type: 'anyone' },
-            });
-            */
-        } catch (error) {
-            console.error("Drive Upload Error:", error);
-            // We continue even if upload fails, but log it.
-        }
-    }
-
     try {
+        const rawData = {
+            leadName: formData.get("leadName"),
+            leadEmail: formData.get("leadEmail"),
+            leadRoll: formData.get("leadRoll"),
+            leadPhone: formData.get("leadPhone"),
+            leadBranch: formData.get("leadBranch"),
+            leadYear: formData.get("leadYear"),
+            teamName: formData.get("teamName"),
+            eventSlug: formData.get("eventSlug"),
+            utrId: formData.get("utrId"),
+        }
+
+        const validatedFields = formSchema.safeParse(rawData)
+
+        if (!validatedFields.success) {
+            console.error(validatedFields.error)
+            return { error: "Invalid lead details. Please check your inputs." }
+        }
+
+        const { leadName, leadEmail, leadRoll, leadPhone, leadBranch, leadYear, teamName, eventSlug } = validatedFields.data
+
+        const members = []
+        let memberIndex = 0
+        while (formData.get(`member_${memberIndex}_name`)) {
+            members.push({
+                name: formData.get(`member_${memberIndex}_name`),
+                roll: formData.get(`member_${memberIndex}_roll`),
+                email: formData.get(`member_${memberIndex}_email`),
+            })
+            memberIndex++
+        }
+
+        const screenshot = formData.get("screenshot") as File | null;
+        let screenshotLink = "";
+
+        if (screenshot && screenshot.size > 0) {
+            try {
+                /* 
+                 * REPLACED GOOGLE DRIVE WITH CLOUDINARY
+                 * Google Drive Service Accounts have 0 storage quota for personal drives.
+                 * Cloudinary is a dedicated image hosting service that works perfectly here.
+                 */
+                const { v2: cloudinary } = await import("cloudinary")
+
+                cloudinary.config({
+                    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+                    api_key: process.env.CLOUDINARY_API_KEY,
+                    api_secret: process.env.CLOUDINARY_API_SECRET
+                })
+
+                // Convert buffer to base64 for Cloudinary upload
+                const buffer = Buffer.from(await screenshot.arrayBuffer());
+                const base64Image = `data:${screenshot.type};base64,${buffer.toString('base64')}`;
+
+                const uploadResponse = await cloudinary.uploader.upload(base64Image, {
+                    folder: "neural_nexus_payments",
+                    public_id: `${leadName}_${eventSlug}_Payment`.replace(/\s+/g, '_'),
+                    resource_type: "image"
+                });
+
+                screenshotLink = uploadResponse.secure_url;
+
+            } catch (error: any) {
+                console.error("Cloudinary Upload Error:", error);
+                // Continue even if upload fails
+            }
+        }
+
         const ticketId = Math.random().toString(36).substr(2, 9).toUpperCase();
 
         // 1. Google Sheets Integration
@@ -127,6 +117,25 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
             const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID as string, serviceAccountAuth);
             await doc.loadInfo();
             const sheet = doc.sheetsByIndex[0];
+
+            // Check for headers and add if missing
+            await sheet.loadHeaderRow().catch(async () => {
+                await sheet.setHeaderRow([
+                    "Ticket ID",
+                    "Timestamp",
+                    "Event",
+                    "Team Name",
+                    "Lead Name",
+                    "Lead Email",
+                    "Lead Roll",
+                    "Lead Phone",
+                    "Lead Branch",
+                    "Lead Year",
+                    "Members",
+                    "Screenshot",
+                    "UTR ID"
+                ]);
+            });
 
             // Flatten members for the sheet (just comma separated or first few)
             const membersString = members.map(m => `${m.name} (${m.roll})`).join(', ');

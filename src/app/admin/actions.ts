@@ -34,12 +34,40 @@ export async function logout() {
 import { revalidatePath } from "next/cache"
 import { eventStore } from "@/lib/store"
 
+// Helper to upload image to Cloudinary
+async function uploadEventImage(imageFile: File, slug: string): Promise<string | null> {
+    try {
+        if (!imageFile || imageFile.size === 0) return null;
+
+        const { v2: cloudinary } = await import("cloudinary")
+        cloudinary.config({
+            cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        })
+
+        const buffer = Buffer.from(await imageFile.arrayBuffer());
+        const base64Image = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
+
+        const uploadResponse = await cloudinary.uploader.upload(base64Image, {
+            folder: "neural_nexus_events",
+            public_id: `event_${slug}`,
+            resource_type: "image"
+        });
+
+        return uploadResponse.secure_url;
+    } catch (error) {
+        console.error("Image upload failed:", error);
+        return null;
+    }
+}
+
 export async function updateEventAction(prevState: { error: string }, formData: FormData): Promise<{ error: string }> {
     const slug = formData.get("slug") as string
 
     if (!slug) return { error: "Event slug missing" }
 
-    const updates = {
+    const updates: any = {
         title: formData.get("title") as string,
         date: formData.get("date") as string,
         time: formData.get("time") as string,
@@ -51,6 +79,16 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         teamSize: formData.get("teamSize") as string,
         maxTeamSize: parseInt(formData.get("maxTeamSize") as string) || 1,
         showOnHighlights: formData.get("showOnHighlights") === "on",
+        registrationType: formData.get("registrationType") as string,
+        googleFormUrl: formData.get("googleFormUrl") as string,
+    }
+
+    const imageFile = formData.get("image") as File | null;
+    if (imageFile && imageFile.size > 0) {
+        const imageUrl = await uploadEventImage(imageFile, slug);
+        if (imageUrl) {
+            updates.image = imageUrl;
+        }
     }
 
     try {
@@ -75,6 +113,9 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
         return { error: "Event with this title already exists." }
     }
 
+    const imageFile = formData.get("image") as File | null;
+    const uploadedImageUrl = imageFile ? await uploadEventImage(imageFile, slug) : null;
+
     const newEvent = {
         slug,
         title,
@@ -87,8 +128,10 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
         fullDescription: formData.get("fullDescription") as string,
         teamSize: formData.get("teamSize") as string,
         maxTeamSize: parseInt(formData.get("maxTeamSize") as string) || 1,
-        image: "/images/events/placeholder.jpg", // Default placeholder
+        image: uploadedImageUrl || "/images/events/placeholder.jpg",
         showOnHighlights: formData.get("showOnHighlights") === "on",
+        registrationType: (formData.get("registrationType") as "website" | "google_form") || "website",
+        googleFormUrl: (formData.get("googleFormUrl") as string) || "",
     }
 
     try {

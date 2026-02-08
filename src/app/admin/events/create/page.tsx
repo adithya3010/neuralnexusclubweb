@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import { useFormStatus } from "react-dom"
 import { createEventAction } from "@/app/admin/actions"
 import { Button } from "@/components/ui/button"
@@ -21,6 +21,7 @@ function SubmitButton() {
 
 export default function CreateEventPage() {
     const [state, formAction] = useActionState(createEventAction, { error: "" })
+    const [registrationType, setRegistrationType] = useState("website")
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -34,6 +35,12 @@ export default function CreateEventPage() {
 
             <GlassCard className="max-w-2xl mx-auto p-8">
                 <form action={formAction} className="space-y-6">
+
+                    <div className="space-y-2">
+                        <Label htmlFor="image">Event Poster</Label>
+                        <Input id="image" name="image" type="file" accept="image/*" className="cursor-pointer" />
+                        <p className="text-xs text-muted-foreground">Recommended ratio: 16:9. Max size: 5MB.</p>
+                    </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="title">Event Title</Label>
@@ -84,6 +91,29 @@ export default function CreateEventPage() {
                             <option value="Hackathon">Hackathon</option>
                             <option value="Workshop">Workshop</option>
                         </select>
+                    </div>
+
+                    <div className="space-y-4 border rounded-lg p-4 bg-white/5">
+                        <div className="space-y-2">
+                            <Label htmlFor="registrationType">Registration Type</Label>
+                            <select
+                                id="registrationType"
+                                name="registrationType"
+                                value={registrationType}
+                                onChange={(e) => setRegistrationType(e.target.value)}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                <option value="website">Website Registration</option>
+                                <option value="google_form">Google Form</option>
+                            </select>
+                        </div>
+
+                        {registrationType === "google_form" && (
+                            <div className="space-y-2">
+                                <Label htmlFor="googleFormUrl">Google Form URL</Label>
+                                <Input id="googleFormUrl" name="googleFormUrl" placeholder="https://forms.google.com/..." required />
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex items-center space-x-2">

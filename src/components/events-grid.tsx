@@ -39,7 +39,15 @@ export function EventsGrid({ events }: { events: Event[] }) {
 
                         {/* Image Area */}
                         <div className="h-48 bg-gradient-to-br from-gray-900 to-black relative overflow-hidden group-hover:shadow-[inset_0_0_20px_rgba(157,134,255,0.2)]">
-                            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+                            {event.image ? (
+                                <img
+                                    src={event.image}
+                                    alt={event.title}
+                                    className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
+                                />
+                            ) : (
+                                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+                            )}
                             <div className="absolute top-4 right-4">
                                 <span className={`px-2 py-1 text-[10px] font-mono tracking-widest border rounded-sm uppercase ${event.status === 'Open'
                                     ? 'border-green-500/30 text-green-400 bg-green-500/10'

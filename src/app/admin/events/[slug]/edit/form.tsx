@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import { useFormStatus } from "react-dom"
 import { updateEventAction } from "@/app/admin/actions"
 import { Button } from "@/components/ui/button"
@@ -22,11 +22,25 @@ function SubmitButton() {
 
 export function EditEventForm({ event }: { event: Event }) {
     const [state, formAction] = useActionState(updateEventAction, { error: "" })
+    const [registrationType, setRegistrationType] = useState(event.registrationType || "website")
 
     return (
         <GlassCard className="max-w-2xl mx-auto p-8">
             <form action={formAction} className="space-y-6">
                 <input type="hidden" name="slug" value={event.slug} />
+
+                <div className="space-y-2">
+                    <Label htmlFor="image">Event Poster</Label>
+                    <div className="flex items-center gap-4">
+                        {event.image && (
+                            <img src={event.image} alt="Current Poster" className="h-20 w-32 object-cover rounded-md border border-white/10" />
+                        )}
+                        <div className="flex-1">
+                            <Input id="image" name="image" type="file" accept="image/*" className="cursor-pointer" />
+                            <p className="text-xs text-muted-foreground mt-1">Upload to replace current poster. Max 5MB.</p>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="space-y-2">
                     <Label htmlFor="title">Event Title</Label>
@@ -50,12 +64,16 @@ export function EditEventForm({ event }: { event: Event }) {
                         <Input id="venue" name="venue" defaultValue={event.venue} required />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="teamSize">Team Size</Label>
+                        <Label htmlFor="teamSize">Team Size (Display)</Label>
                         <Input id="teamSize" name="teamSize" defaultValue={event.teamSize} required />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="maxTeamSize">Max Team Size (Number)</Label>
+                        <Input id="maxTeamSize" name="maxTeamSize" type="number" min="1" defaultValue={event.maxTeamSize} required />
+                    </div>
                     <div className="space-y-2">
                         <Label htmlFor="status">Status</Label>
                         <select id="status" name="status" defaultValue={event.status} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
@@ -63,15 +81,39 @@ export function EditEventForm({ event }: { event: Event }) {
                             <option value="Closed">Closed</option>
                         </select>
                     </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="category">Category</Label>
+                    <select id="category" name="category" defaultValue={event.category} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                        <option value="Technical">Technical</option>
+                        <option value="Non-Technical">Non-Technical</option>
+                        <option value="Hackathon">Hackathon</option>
+                        <option value="Workshop">Workshop</option>
+                    </select>
+                </div>
+
+                <div className="space-y-4 border rounded-lg p-4 bg-white/5">
                     <div className="space-y-2">
-                        <Label htmlFor="category">Category</Label>
-                        <select id="category" name="category" defaultValue={event.category} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                            <option value="Technical">Technical</option>
-                            <option value="Non-Technical">Non-Technical</option>
-                            <option value="Hackathon">Hackathon</option>
-                            <option value="Workshop">Workshop</option>
+                        <Label htmlFor="registrationType">Registration Type</Label>
+                        <select
+                            id="registrationType"
+                            name="registrationType"
+                            value={registrationType}
+                            onChange={(e) => setRegistrationType(e.target.value)}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            <option value="website">Website Registration</option>
+                            <option value="google_form">Google Form</option>
                         </select>
                     </div>
+
+                    {registrationType === "google_form" && (
+                        <div className="space-y-2">
+                            <Label htmlFor="googleFormUrl">Google Form URL</Label>
+                            <Input id="googleFormUrl" name="googleFormUrl" defaultValue={event.googleFormUrl} placeholder="https://forms.google.com/..." required />
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex items-center space-x-2">

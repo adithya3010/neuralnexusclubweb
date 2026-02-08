@@ -16,9 +16,11 @@ export async function generateStaticParams() {
 }
 
 
+import { Event } from "@/lib/data"
+
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const event = await eventStore.getBySlug(slug)
+    const event = await eventStore.getBySlug(slug) as unknown as Event
 
     if (!event) {
         notFound()
@@ -34,6 +36,18 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 <Link href="/events" className="inline-flex items-center text-muted-foreground hover:text-white mb-8 transition-colors">
                     <ArrowLeft className="mr-2 h-4 w-4" /> Back to Events
                 </Link>
+
+                {/* Event Banner Image */}
+                {event.image && (
+                    <div className="relative w-full h-[300px] rounded-2xl overflow-hidden mb-8 border border-white/10 group">
+                        <img
+                            src={event.image}
+                            alt={event.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </div>
+                )}
 
                 <div className="space-y-8">
                     <div className="space-y-4">
@@ -78,9 +92,15 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                                 <div className="pt-4 border-t border-white/10">
                                     {event.status === "Open" ? (
                                         <Button size="lg" className="w-full" asChild>
-                                            <Link href={`/register?event=${event.slug}`}>
-                                                Register Now
-                                            </Link>
+                                            {event.registrationType === 'google_form' && event.googleFormUrl ? (
+                                                <a href={event.googleFormUrl} target="_blank" rel="noopener noreferrer">
+                                                    Register via Google Form
+                                                </a>
+                                            ) : (
+                                                <Link href={`/register?event=${event.slug}`}>
+                                                    Register Now
+                                                </Link>
+                                            )}
                                         </Button>
                                     ) : (
                                         <Button size="lg" disabled className="w-full">
