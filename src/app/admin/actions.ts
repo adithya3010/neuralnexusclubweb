@@ -81,6 +81,22 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         showOnHighlights: formData.get("showOnHighlights") === "on",
         registrationType: formData.get("registrationType") as string,
         googleFormUrl: formData.get("googleFormUrl") as string,
+        feeType: (formData.get("feeType") as "free" | "per_person" | "fixed_team" | "tiered") || "free",
+        feeAmount: parseInt(formData.get("feeAmount") as string) || 0,
+    }
+
+    // Handle Tiered Prices
+    if (updates.feeType === 'tiered') {
+        const tieredPrices: Record<string, number> = {};
+        for (let i = 1; i <= 6; i++) {
+            const price = formData.get(`tier_${i}`);
+            if (price) {
+                tieredPrices[i.toString()] = parseInt(price as string);
+            }
+        }
+        updates.tieredPrices = tieredPrices;
+    } else {
+        updates.tieredPrices = {};
     }
 
     if (updates.registrationType === "google_form" && (!updates.googleFormUrl || !updates.googleFormUrl.trim())) {
@@ -143,6 +159,8 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
         showOnHighlights: formData.get("showOnHighlights") === "on",
         registrationType: (formData.get("registrationType") as "website" | "google_form") || "website",
         googleFormUrl: (formData.get("googleFormUrl") as string) || "",
+        feeType: (formData.get("feeType") as "free" | "per_person" | "fixed_team") || "free",
+        feeAmount: parseInt(formData.get("feeAmount") as string) || 0,
     }
 
     try {

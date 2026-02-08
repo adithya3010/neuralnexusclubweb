@@ -21,8 +21,8 @@ function SubmitButton() {
 
 export default function CreateEventPage() {
     const [state, formAction] = useActionState(createEventAction, { error: "" })
-    const [registrationType, setRegistrationType] = useState("website")
-
+    const [registrationType, setRegistrationType] = useState<"website" | "google_form">("website")
+    const [feeType, setFeeType] = useState<"free" | "per_person" | "fixed_team" | "tiered">("free")
     return (
         <div className="container mx-auto px-4 py-8">
             <Link href="/admin/dashboard" className="inline-flex items-center text-muted-foreground hover:text-white mb-6">
@@ -114,6 +114,85 @@ export default function CreateEventPage() {
                                 <Input id="googleFormUrl" name="googleFormUrl" placeholder="https://forms.google.com/..." required />
                             </div>
                         )}
+                    </div>
+
+                    {/* Registration Fee Section */}
+                    <div className="space-y-4 border rounded-lg p-4 bg-white/5">
+                        <div className="space-y-2">
+                            <Label htmlFor="feeType">Registration Fee Type</Label>
+                            <select
+                                id="feeType"
+                                name="feeType"
+                                defaultValue="free"
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                onChange={(e) => {
+                                    const amountInput = document.getElementById('feeAmount');
+                                    const tieredSection = document.getElementById('tiered-section');
+
+                                    if (e.target.value === 'free') {
+                                        if (amountInput) {
+                                            amountInput.setAttribute('disabled', 'true');
+                                            (amountInput as HTMLInputElement).value = '0';
+                                        }
+                                        if (tieredSection) tieredSection.classList.add('hidden');
+                                    } else if (e.target.value === 'tiered') {
+                                        if (amountInput) {
+                                            amountInput.setAttribute('disabled', 'true');
+                                            (amountInput as HTMLInputElement).value = '0'; // Main amount undefined for tiered
+                                        }
+                                        if (tieredSection) tieredSection.classList.remove('hidden');
+                                    } else {
+                                        if (amountInput) amountInput.removeAttribute('disabled');
+                                        if (tieredSection) tieredSection.classList.add('hidden');
+                                    }
+                                    setFeeType(e.target.value as any);
+                                }}
+                            >
+                                <option value="free">Free</option>
+                                <option value="per_person">Per Person</option>
+                                <option value="fixed_team">Fixed Team Price</option>
+                                <option value="tiered">Tiered (Based on Team Size)</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="feeAmount">Base Fee Amount (₹)</Label>
+                            <Input
+                                id="feeAmount"
+                                name="feeAmount"
+                                type="number"
+                                min="0"
+                                defaultValue="0"
+                                disabled
+                                placeholder="0"
+                            />
+                            <p className="text-xs text-muted-foreground">Applies to Per Person & Fixed Team Price.</p>
+                        </div>
+
+                        {/* Tiered Pricing Inputs */}
+                        <div id="tiered-section" className={`space-y-3 pt-2 ${feeType !== 'tiered' ? 'hidden' : ''}`}>
+                            <Label className="text-secondary">Tiered Pricing (₹ per Team)</Label>
+                            <div className="grid grid-cols-2 gap-4">
+                                {/* We need maxTeamSize to render inputs. 
+                                    Since maxTeamSize is an input in this same form, we need to track it in state to render dynamic inputs.
+                                    However, simple solution: Render inputs for 1 to 10 (reasonable max). 
+                                    Better: Add onChange to maxTeamSize input to update state.
+                                */}
+                                {Array.from({ length: 6 }).map((_, i) => (
+                                    <div key={i} className="space-y-1">
+                                        <Label htmlFor={`tier_${i + 1}`} className="text-xs">Team of {i + 1}</Label>
+                                        <Input
+                                            id={`tier_${i + 1}`}
+                                            name={`tier_${i + 1}`}
+                                            type="number"
+                                            min="0"
+                                            placeholder="₹"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <p className="text-xs text-muted-foreground">Set price for each team size. Leave 0 if that size is not allowed (but better controlled by Min/Max team size).</p>
+                        </div>
                     </div>
 
                     <div className="flex items-center space-x-2">

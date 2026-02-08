@@ -22,7 +22,8 @@ function SubmitButton() {
 
 export function EditEventForm({ event }: { event: Event }) {
     const [state, formAction] = useActionState(updateEventAction, { error: "" })
-    const [registrationType, setRegistrationType] = useState(event.registrationType || "website")
+    const [registrationType, setRegistrationType] = useState<"website" | "google_form">(event.registrationType as "website" | "google_form" || "website")
+    const [feeType, setFeeType] = useState<"free" | "per_person" | "fixed_team" | "tiered">((event.feeType as any) || "free")
 
     return (
         <GlassCard className="max-w-2xl mx-auto p-8">
@@ -111,9 +112,89 @@ export function EditEventForm({ event }: { event: Event }) {
                     {registrationType === "google_form" && (
                         <div className="space-y-2">
                             <Label htmlFor="googleFormUrl">Google Form URL</Label>
-                            <Input id="googleFormUrl" name="googleFormUrl" defaultValue={event.googleFormUrl} placeholder="https://forms.google.com/..." required />
+                            <Input id="googleFormUrl" name="googleFormUrl" defaultValue={event.googleFormUrl || ""} placeholder="https://forms.google.com/..." required />
                         </div>
                     )}
+                </div>
+
+                {/* Registration Fee Section */}
+                <div className="space-y-4 border rounded-lg p-4 bg-white/5">
+                    <div className="space-y-2">
+                        <Label htmlFor="feeType">Registration Fee Type</Label>
+                        <select
+                            id="feeType"
+                            name="feeType"
+                            defaultValue={event.feeType || "free"}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            onChange={(e) => {
+                                const amountInput = document.getElementById('feeAmount');
+                                const tieredSection = document.getElementById('tiered-section');
+
+                                if (e.target.value === 'free') {
+                                    if (amountInput) {
+                                        amountInput.setAttribute('disabled', 'true');
+                                        (amountInput as HTMLInputElement).value = '0';
+                                    }
+                                    if (tieredSection) tieredSection.classList.add('hidden');
+                                } else if (e.target.value === 'tiered') {
+                                    if (amountInput) {
+                                        amountInput.setAttribute('disabled', 'true');
+                                        (amountInput as HTMLInputElement).value = '0';
+                                    }
+                                    if (tieredSection) tieredSection.classList.remove('hidden');
+                                } else {
+                                    if (amountInput) amountInput.removeAttribute('disabled');
+                                    if (tieredSection) tieredSection.classList.add('hidden');
+                                }
+                                setFeeType(e.target.value as any);
+                            }}
+                        >
+                            <option value="free">Free</option>
+                            <option value="per_person">Per Person</option>
+                            <option value="fixed_team">Fixed Team Price</option>
+                            <option value="tiered">Tiered (Based on Team Size)</option>
+                        </select>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="feeAmount">Base Fee Amount (₹)</Label>
+                        <Input
+                            id="feeAmount"
+                            name="feeAmount"
+                            type="number"
+                            min="0"
+                            defaultValue={event.feeAmount || 0}
+                            disabled={!event.feeType || event.feeType === 'free' || event.feeType === 'tiered'}
+                            placeholder="0"
+                        />
+                        <p className="text-xs text-muted-foreground">Applies to Per Person & Fixed Team Price.</p>
+                    </div>
+
+                    {/* Tiered Pricing Inputs */}
+                    <div id="tiered-section" className={`space-y-3 pt-2 ${feeType !== 'tiered' ? 'hidden' : ''}`}>
+                        <Label className="text-secondary">Tiered Pricing (₹ per Team)</Label>
+                        <div className="grid grid-cols-2 gap-4">
+                            {Array.from({ length: 6 }).map((_, i) => {
+                                const size = (i + 1).toString();
+                                // @ts-ignore - tieredPrices type check
+                                const price = event.tieredPrices?.[size] || '';
+                                return (
+                                    <div key={i} className="space-y-1">
+                                        <Label htmlFor={`tier_${size}`} className="text-xs">Team of {size}</Label>
+                                        <Input
+                                            id={`tier_${size}`}
+                                            name={`tier_${size}`}
+                                            type="number"
+                                            min="0"
+                                            defaultValue={price}
+                                            placeholder="₹"
+                                        />
+                                    </div>
+                                )
+                            })}
+                        </div>
+                        <p className="text-xs text-muted-foreground">Set price for each team size.</p>
+                    </div>
                 </div>
 
                 <div className="flex items-center space-x-2">

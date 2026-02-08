@@ -87,6 +87,15 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                                         <Users className="h-4 w-4 text-primary" />
                                         <span>Team Size: {event.teamSize}</span>
                                     </div>
+                                    <div className="flex items-center gap-3 text-sm">
+                                        <div className="h-4 w-4 flex items-center justify-center font-bold text-primary">₹</div>
+                                        <span>
+                                            {event.feeType === 'free' ? 'Free Registration' :
+                                                event.feeType === 'per_person' ? `₹${event.feeAmount} / Person` :
+                                                    event.feeType === 'fixed_team' ? `₹${event.feeAmount} / Team` :
+                                                        'Tiered Pricing (Based on Team Size)'}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div className="pt-4 border-t border-white/10">

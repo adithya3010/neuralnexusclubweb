@@ -306,106 +306,108 @@ export function RegisterForm({ event, eventSlug }: RegisterFormProps) {
                             <div className="space-y-4">
                                 <h3 className="text-xl font-semibold border-b border-white/10 pb-2">Payment Verification</h3>
 
-
-                                <div className="space-y-4">
-                                    <Label>Scan to Pay</Label>
-                                    <div className="border rounded-lg p-4 bg-white w-fit">
-                                        <img
-                                            src="/images/qrcode.jpeg"
-                                            alt="Payment QR Code"
-                                            className="w-48 h-48 object-contain"
-                                        />
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Scan this QR code with any UPI app to pay.
-                                        <br />
-                                        <span className="text-yellow-500 font-medium">Note: Ensure 'payment-qr.png' exists in 'public/images/'.</span>
-                                    </p>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="utrId">UTR ID / Transaction ID</Label>
-                                    <Input id="utrId" name="utrId" placeholder="e.g. 1234567890" required />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="screenshot">Payment Screenshot</Label>
-                                    <div className="space-y-4">
-                                        {previewUrl ? (
-                                            <div className="relative inline-block">
-                                                <div className="border border-white/20 rounded-lg overflow-hidden w-32 h-32 bg-black/20">
-                                                    <img
-                                                        src={previewUrl}
-                                                        alt="Preview"
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={handleRemoveFile}
-                                                    className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 text-white hover:bg-red-600 transition-colors"
-                                                    title="Remove image"
-                                                >
-                                                    <X className="w-4 h-4" />
-                                                </button>
+                                {event && event.feeType !== 'free' ? (
+                                    <>
+                                        <div className="bg-white/5 p-4 rounded-lg border border-white/10 space-y-2">
+                                            <p className="text-sm text-muted-foreground">Payment Breakdown</p>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span>Fee Type:</span>
+                                                <span className="font-medium capitalize">{event.feeType?.replace('_', ' ')}</span>
                                             </div>
-                                        ) : null}
-
-                                        <Input
-                                            ref={fileInputRef}
-                                            id="screenshot"
-                                            name="screenshot"
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleFileChange}
-                                            className={`cursor-pointer file:cursor-pointer file:text-primary file:font-semibold ${previewUrl ? 'hidden' : ''}`}
-                                        />
-                                        {!previewUrl && (
-                                            <p className="text-xs text-muted-foreground">Upload a screenshot of your payment or relevant verify doc.</p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Team Members Section */}
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                                    <h3 className="text-xl font-semibold">Team Members</h3>
-                                    {event && memberCount < (event.maxTeamSize - 1) && (
-                                        <Button type="button" variant="outline" size="sm" onClick={() => setMemberCount(c => c + 1)}>
-                                            + Add Member
-                                        </Button>
-                                    )}
-                                </div>
-
-                                {memberCount === 0 && <p className="text-sm text-muted-foreground italic">No additional members added. Click above to add.</p>}
-
-                                <div className="space-y-6">
-                                    {Array.from({ length: memberCount }).map((_, i) => (
-                                        <div key={i} className="p-4 rounded-lg bg-white/5 space-y-4 relative group">
-                                            <div className="absolute top-2 right-2">
-                                                <Button type="button" variant="ghost" size="sm" className="h-6 w-6 p-0 text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setMemberCount(c => c - 1)}>
-                                                    &times;
-                                                </Button>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span>Fee Amount:</span>
+                                                <span className="font-medium">₹{event.feeAmount}</span>
                                             </div>
-                                            <p className="text-sm font-medium text-muted-foreground">Member {i + 1}</p>
-                                            <div className="grid md:grid-cols-3 gap-3">
-                                                <div className="space-y-1">
-                                                    <Label htmlFor={`member_${i}_name`} className="text-xs">Name</Label>
-                                                    <Input id={`member_${i}_name`} name={`member_${i}_name`} placeholder="Name" required />
+                                            {event.feeType === 'per_person' && (
+                                                <div className="flex justify-between items-center text-sm">
+                                                    <span>Team Members:</span>
+                                                    <span className="font-medium">{memberCount + 1} (Lead + {memberCount})</span>
                                                 </div>
-                                                <div className="space-y-1">
-                                                    <Label htmlFor={`member_${i}_roll`} className="text-xs">Roll No</Label>
-                                                    <Input id={`member_${i}_roll`} name={`member_${i}_roll`} placeholder="Roll No" required />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <Label htmlFor={`member_${i}_email`} className="text-xs">Email</Label>
-                                                    <Input id={`member_${i}_email`} name={`member_${i}_email`} type="email" placeholder="Email" required />
-                                                </div>
+                                            )}
+                                            <div className="flex justify-between items-center text-lg font-bold pt-2 border-t border-white/10 mt-2">
+                                                <span>Total Amount:</span>
+                                                <span>
+                                                    ₹{event.feeType === 'per_person'
+                                                        ? (event.feeAmount || 0) * (memberCount + 1)
+                                                        : event.feeType === 'tiered'
+                                                            ? (event.tieredPrices?.[(memberCount + 1).toString()] || 0)
+                                                            : (event.feeAmount || 0)}
+                                                </span>
+                                            </div>
+                                            {event.feeType === 'tiered' && (
+                                                <p className="text-xs text-muted-foreground mt-1 text-right">
+                                                    Applied price for Team Size of {memberCount + 1}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <Label>Scan to Pay</Label>
+                                            <div className="border rounded-lg p-4 bg-white w-fit">
+                                                <img
+                                                    src="/images/qrcode.jpeg"
+                                                    alt="Payment QR Code"
+                                                    className="w-48 h-48 object-contain"
+                                                />
+                                            </div>
+                                            <p className="text-xs text-muted-foreground">
+                                                Scan this QR code with any UPI app to pay.
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="utrId">UTR ID / Transaction ID</Label>
+                                            <Input id="utrId" name="utrId" placeholder="e.g. 1234567890" required />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="screenshot">Payment Screenshot</Label>
+                                            <div className="space-y-4">
+                                                {previewUrl ? (
+                                                    <div className="relative inline-block">
+                                                        <div className="border border-white/20 rounded-lg overflow-hidden w-32 h-32 bg-black/20">
+                                                            <img
+                                                                src={previewUrl}
+                                                                alt="Preview"
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleRemoveFile}
+                                                            className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 text-white hover:bg-red-600 transition-colors"
+                                                            title="Remove image"
+                                                        >
+                                                            <X className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                ) : null}
+
+                                                <Input
+                                                    ref={fileInputRef}
+                                                    id="screenshot"
+                                                    name="screenshot"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleFileChange}
+                                                    className={`cursor-pointer file:cursor-pointer file:text-primary file:font-semibold ${previewUrl ? 'hidden' : ''}`}
+                                                    required
+                                                />
+                                                {!previewUrl && (
+                                                    <p className="text-xs text-muted-foreground">Upload a screenshot of your payment or relevant verify doc.</p>
+                                                )}
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </>
+                                ) : (
+                                    <div className="bg-green-500/10 border border-green-500/20 p-6 rounded-lg text-center space-y-2">
+                                        <div className="flex justify-center">
+                                            <CheckCircle className="h-10 w-10 text-green-500" />
+                                        </div>
+                                        <h4 className="text-lg font-semibold text-green-500">Free Registration</h4>
+                                        <p className="text-sm text-muted-foreground">No payment is required for this event. Click below to complete your registration.</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

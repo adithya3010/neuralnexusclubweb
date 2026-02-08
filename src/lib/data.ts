@@ -14,6 +14,9 @@ export interface Event {
     showOnHighlights?: boolean
     registrationType?: 'website' | 'google_form'
     googleFormUrl?: string
+    feeType?: 'free' | 'per_person' | 'fixed_team' | 'tiered'
+    feeAmount?: number
+    tieredPrices?: Record<string, number>
 }
 
 export const events: Event[] = [
