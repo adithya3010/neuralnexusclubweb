@@ -39,7 +39,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
                 {/* Event Banner Image */}
                 {event.image && (
-                    <div className="relative w-full h-[300px] rounded-2xl overflow-hidden mb-8 border border-white/10 group">
+                    <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-8 border border-white/10 group">
                         <img
                             src={event.image}
                             alt={event.title}
