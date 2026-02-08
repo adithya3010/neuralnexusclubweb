@@ -20,6 +20,7 @@ interface TicketCheckInFormProps {
 export function TicketCheckInForm({ ticket }: TicketCheckInFormProps) {
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
 
     // Parse members to create initial state
     // We want to track attendance for Lead + Members
@@ -57,6 +58,7 @@ export function TicketCheckInForm({ ticket }: TicketCheckInFormProps) {
             if (result.error) {
                 alert(result.error)
             } else {
+                setIsSuccess(true)
                 router.refresh()
             }
         } catch (error) {
@@ -65,6 +67,44 @@ export function TicketCheckInForm({ ticket }: TicketCheckInFormProps) {
         } finally {
             setIsSubmitting(false)
         }
+    }
+
+    if (isSuccess) {
+        return (
+            <GlassCard className="p-8 w-full max-w-md border-green-500/50 bg-black/60 shadow-[0_0_50px_-12px_rgba(34,197,94,0.2)]">
+                <div className="flex justify-center mb-6">
+                    <div className="relative">
+                        <div className="absolute inset-0 bg-green-500 blur-xl opacity-20 rounded-full" />
+                        <div className="h-16 w-16 bg-green-500/20 rounded-full flex items-center justify-center relative z-10 border border-green-500/50">
+                            <Check className="h-8 w-8 text-green-500" />
+                        </div>
+                    </div>
+                </div>
+
+                <h1 className="text-2xl font-bold text-center mb-2">Check In Confirmed!</h1>
+                <p className="text-sm text-muted-foreground text-center mb-8">
+                    Attendance has been marked for {ticket.team || "Independent Entry"}.
+                </p>
+
+                <div className="space-y-3">
+                    <Button
+                        className="w-full bg-green-600 hover:bg-green-700"
+                        size="lg"
+                        onClick={() => router.push('/admin/scan')}
+                    >
+                        Scan Next Ticket
+                    </Button>
+                    <Button
+                        variant="outline"
+                        className="w-full"
+                        size="lg"
+                        onClick={() => window.location.reload()}
+                    >
+                        View Updated Ticket
+                    </Button>
+                </div>
+            </GlassCard>
+        )
     }
 
     return (

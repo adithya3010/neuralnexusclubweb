@@ -29,9 +29,9 @@ export function TicketExpiredView({ attendedAt, memberAttendance }: TicketExpire
                 </div>
             </div>
 
-            <h1 className="text-2xl font-bold text-center text-amber-500 mb-2">TICKET EXPIRED</h1>
+            <h1 className="text-2xl font-bold text-center text-amber-500 mb-2">TICKET REDEEMED</h1>
             <p className="text-sm text-muted-foreground text-center mb-8">
-                This ticket has used at<br />
+                This ticket was used at<br />
                 <span className="text-white font-mono bg-white/10 px-2 py-1 rounded mt-1 inline-block">
                     {attendedAt}
                 </span>
@@ -45,8 +45,8 @@ export function TicketExpiredView({ attendedAt, memberAttendance }: TicketExpire
                             <div key={idx} className="flex justify-between items-center text-sm">
                                 <span className="text-gray-300">{item.name}</span>
                                 <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold ${item.status === 'Present'
-                                        ? 'bg-green-500/20 text-green-400'
-                                        : 'bg-red-500/20 text-red-400'
+                                    ? 'bg-green-500/20 text-green-400'
+                                    : 'bg-red-500/20 text-red-400'
                                     }`}>
                                     {item.status || 'Unknown'}
                                 </span>
