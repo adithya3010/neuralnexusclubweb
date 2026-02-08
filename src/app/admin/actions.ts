@@ -83,6 +83,10 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         googleFormUrl: formData.get("googleFormUrl") as string,
     }
 
+    if (updates.registrationType === "google_form" && (!updates.googleFormUrl || !updates.googleFormUrl.trim())) {
+        return { error: "Google Form URL is required for Google Form registration." }
+    }
+
     const imageFile = formData.get("image") as File | null;
     if (imageFile && imageFile.size > 0) {
         const imageUrl = await uploadEventImage(imageFile, slug);
@@ -111,6 +115,13 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
 
     if (await eventStore.getBySlug(slug)) {
         return { error: "Event with this title already exists." }
+    }
+
+    const registrationType = (formData.get("registrationType") as "website" | "google_form") || "website";
+    const googleFormUrl = (formData.get("googleFormUrl") as string) || "";
+
+    if (registrationType === "google_form" && (!googleFormUrl || !googleFormUrl.trim())) {
+        return { error: "Google Form URL is required for Google Form registration." }
     }
 
     const imageFile = formData.get("image") as File | null;

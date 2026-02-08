@@ -100,7 +100,7 @@ export function EditEventForm({ event }: { event: Event }) {
                             id="registrationType"
                             name="registrationType"
                             value={registrationType}
-                            onChange={(e) => setRegistrationType(e.target.value)}
+                            onChange={(e) => setRegistrationType(e.target.value as "website" | "google_form")}
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <option value="website">Website Registration</option>
