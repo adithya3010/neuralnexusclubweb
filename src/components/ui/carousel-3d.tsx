@@ -19,19 +19,21 @@ export function Carousel3D({ events }: { events: Event[] }) {
 
     return (
         <div
-            className="w-full overflow-hidden py-10 relative group/carousel"
+            className="w-full overflow-x-auto md:overflow-hidden py-10 relative group/carousel"
             ref={containerRef}
         >
             {/* Gradient Masks for fading edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none sticky left-0" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none sticky right-0" />
 
             <div
-                className="flex gap-8 px-4 w-max animate-marquee group-hover/carousel:[animation-play-state:paused]"
+                className="flex gap-8 px-4 w-max md:animate-marquee group-hover/carousel:[animation-play-state:paused] snap-x snap-mandatory"
                 ref={contentRef}
             >
                 {extendedEvents.map((event, index) => (
-                    <CarouselCard key={`${event.slug}-${index}`} event={event} />
+                    <div key={`${event.slug}-${index}`} className="snap-center">
+                        <CarouselCard event={event} />
+                    </div>
                 ))}
             </div>
         </div>
@@ -49,9 +51,19 @@ function CarouselCard({ event }: { event: Event }) {
 
                 {/* Image Area with "Scanner" effect */}
                 <div className="h-52 bg-gradient-to-br from-gray-900 to-black relative overflow-hidden group-hover:shadow-[inset_0_0_20px_rgba(157,134,255,0.3)] transition-all">
-                    {/* Grid overlay */}
-                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                    {event.image ? (
+                        <img
+                            src={event.image}
+                            alt={event.title}
+                            className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
+                        />
+                    ) : (
+                        <>
+                            {/* Grid overlay */}
+                            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                        </>
+                    )}
 
                     {/* Floating Category Badge */}
                     <div className="absolute top-4 left-4">
