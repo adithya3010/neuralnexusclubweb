@@ -218,6 +218,43 @@ export function EditEventForm({ event }: { event: Event }) {
                     />
                 </div>
 
+                <div className="space-y-4 border rounded-lg p-4 bg-white/5">
+                    <h3 className="text-lg font-semibold">Event Admin & details</h3>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="password">Event Admin Password</Label>
+                        <Input id="password" name="password" type="text" defaultValue={event.password || ""} placeholder="Password for event coordinator login" required />
+                        <p className="text-xs text-muted-foreground">Used to log in to the Event Dashboard.</p>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="whatsappLink">WhatsApp Group Link</Label>
+                        <Input id="whatsappLink" name="whatsappLink" defaultValue={event.whatsappLink || ""} placeholder="https://chat.whatsapp.com/..." />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="facultyCoordinatorName">Faculty Coordinator Name</Label>
+                            <Input id="facultyCoordinatorName" name="facultyCoordinatorName" defaultValue={event.facultyCoordinatorName || ""} placeholder="Dr. Smith" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="facultyCoordinatorPhone">Faculty Coordinator Phone</Label>
+                            <Input id="facultyCoordinatorPhone" name="facultyCoordinatorPhone" defaultValue={event.facultyCoordinatorPhone || ""} placeholder="9876543210" />
+                        </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="studentCoordinatorName">Student Coordinator Name</Label>
+                            <Input id="studentCoordinatorName" name="studentCoordinatorName" defaultValue={event.studentCoordinatorName || ""} placeholder="John Doe" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="studentCoordinatorPhone">Student Coordinator Phone</Label>
+                            <Input id="studentCoordinatorPhone" name="studentCoordinatorPhone" defaultValue={event.studentCoordinatorPhone || ""} placeholder="9876543210" />
+                        </div>
+                    </div>
+                </div>
+
                 <SubmitButton />
             </form>
         </GlassCard >

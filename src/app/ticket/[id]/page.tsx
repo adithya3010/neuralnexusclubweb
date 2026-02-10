@@ -76,17 +76,87 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
     const cookieStore = await cookies()
     const isAdmin = cookieStore.get("admin_session")?.value === "true"
 
+    // Check if user is event admin
+    let eventAdmin = null;
+    const eventToken = cookieStore.get("event_token")?.value;
+    if (eventToken) {
+        try {
+            // We can use the helper or just simpler decode if we trust the cookie signature was verified by middleware/action usually.
+            // But valid verification is best. 
+            // Importing verifyEventToken from actions might cause issues if it's not careful with 'server-only' etc.
+            // We can duplicate the verified logic or assume if middleware passed it, it's roughly ok, 
+            // but for security we should verify. 
+            // Let's rely on `jose` here as well since we installed it.
+            const { jwtVerify } = await import('jose');
+            const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'neural-nexus-secret-key-change-me');
+            const { payload } = await jwtVerify(eventToken, secret);
+            eventAdmin = payload as { slug: string, title: string };
+        } catch (e) {
+            // invalid token
+        }
+    }
+
+    // Logic:
+    // 1. If Super Admin -> Allow
+    // 2. If Event Admin:
+    //    - Check if ticket.event matches eventAdmin.title
+    //    - If Match -> Allow
+    //    - If Mismatch -> Show Error
+    // 3. If neither -> Public View
+
+    const isAuthorizedAPI = isAdmin || !!eventAdmin;
+    let isEventMismatch = false;
+
+    if (eventAdmin && !isAdmin) {
+        // Strict check
+        // Note: ticket.event comes from Sheet, eventAdmin.title comes from DB. 
+        // Usage of "title" in token payload ensures we compare names.
+        // String comparison might be fragile if titles change, but it's what we have in the sheet.
+        // ideally we would store slug in sheet.
+        if (ticket.event.trim().toLowerCase() !== eventAdmin.title.trim().toLowerCase()) {
+            isEventMismatch = true;
+        }
+    }
+
+    if (isEventMismatch && eventAdmin) {
+        return (
+            <div className="container mx-auto px-4 py-20 flex justify-center items-center min-h-screen">
+                <GlassCard className="p-8 text-center max-w-md w-full border-yellow-500/50">
+                    <div className="flex justify-center mb-6">
+                        <XCircle className="h-20 w-20 text-yellow-500" />
+                    </div>
+                    <h1 className="text-2xl font-bold mb-2">Wrong Event</h1>
+                    <p className="text-muted-foreground mb-4">
+                        This ticket is for <strong>{ticket.event}</strong>.
+                    </p>
+                    <div className="bg-yellow-500/10 p-4 rounded-lg border border-yellow-500/20 mb-6">
+                        <p className="text-sm">
+                            You are currently scanning for:<br />
+                            <span className="font-semibold text-yellow-400 text-lg">{eventAdmin.title}</span>
+                        </p>
+                    </div>
+                    <Button asChild variant="outline">
+                        <Link href="/event-admin/scan">
+                            Return to Scanner
+                        </Link>
+                    </Button>
+                </GlassCard>
+            </div>
+        )
+    }
+
     return (
         <div className="container mx-auto px-4 py-20 flex justify-center items-center min-h-screen">
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
             <SectionWrapper className="relative z-10 w-full max-w-md flex flex-col items-center">
 
                 {/* Admin View Logic */}
-                {isAdmin ? (
+                {isAuthorizedAPI ? (
                     ticket.attended === "Yes" ? (
                         <TicketExpiredView
                             attendedAt={ticket.attendedAt}
                             memberAttendance={ticket.memberAttendance}
+                            backLink={isAdmin ? "/admin/scan" : "/event-admin/scan"}
                         />
                     ) : (
                         <AdminTicketManager ticket={ticket} />
@@ -97,10 +167,10 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
                 )}
 
                 {/* Admin Quick Link back to scanner */}
-                {isAdmin && (
+                {(isAdmin || eventAdmin) && (
                     <div className="mt-8">
                         <Button variant="ghost" asChild className="text-muted-foreground hover:text-white">
-                            <Link href="/admin/scan">
+                            <Link href={isAdmin ? "/admin/scan" : "/event-admin/scan"}>
                                 Return to Scanner
                             </Link>
                         </Button>

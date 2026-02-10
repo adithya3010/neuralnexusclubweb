@@ -8,9 +8,10 @@ import Link from "next/link"
 interface TicketExpiredViewProps {
     attendedAt: string
     memberAttendance?: string
+    backLink?: string
 }
 
-export function TicketExpiredView({ attendedAt, memberAttendance }: TicketExpiredViewProps) {
+export function TicketExpiredView({ attendedAt, memberAttendance, backLink = "/admin/scan" }: TicketExpiredViewProps) {
     // Parse format: "Name (Roll):Present, Name (Roll):Absent"
     // into { name: "Name (Roll)", status: "Present" }
     const attendanceList = memberAttendance
@@ -57,7 +58,7 @@ export function TicketExpiredView({ attendedAt, memberAttendance }: TicketExpire
             )}
 
             <Button className="w-full" variant="outline" asChild>
-                <Link href="/admin/scan">
+                <Link href={backLink}>
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Scan Next Ticket
                 </Link>

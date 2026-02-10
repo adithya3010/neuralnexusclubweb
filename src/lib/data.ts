@@ -17,6 +17,12 @@ export interface Event {
     feeType?: 'free' | 'per_person' | 'fixed_team' | 'tiered'
     feeAmount?: number
     tieredPrices?: Record<string, number>
+    password?: string
+    whatsappLink?: string
+    facultyCoordinatorName?: string
+    facultyCoordinatorPhone?: string
+    studentCoordinatorName?: string
+    studentCoordinatorPhone?: string
 }
 
 export const events: Event[] = [

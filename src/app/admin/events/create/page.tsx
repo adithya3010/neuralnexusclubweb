@@ -195,6 +195,44 @@ export default function CreateEventPage() {
                         </div>
                     </div>
 
+                    {/* Coordinator & Extras Section */}
+                    <div className="space-y-4 border rounded-lg p-4 bg-white/5">
+                        <h3 className="text-lg font-semibold">Event Admin & details</h3>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Event Admin Password</Label>
+                            <Input id="password" name="password" type="text" placeholder="Password for event coordinator login" required />
+                            <p className="text-xs text-muted-foreground">Used to log in to the Event Dashboard.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="whatsappLink">WhatsApp Group Link</Label>
+                            <Input id="whatsappLink" name="whatsappLink" placeholder="https://chat.whatsapp.com/..." />
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="facultyCoordinatorName">Faculty Coordinator Name</Label>
+                                <Input id="facultyCoordinatorName" name="facultyCoordinatorName" placeholder="Dr. Smith" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="facultyCoordinatorPhone">Faculty Coordinator Phone</Label>
+                                <Input id="facultyCoordinatorPhone" name="facultyCoordinatorPhone" placeholder="9876543210" />
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="studentCoordinatorName">Student Coordinator Name</Label>
+                                <Input id="studentCoordinatorName" name="studentCoordinatorName" placeholder="John Doe" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="studentCoordinatorPhone">Student Coordinator Phone</Label>
+                                <Input id="studentCoordinatorPhone" name="studentCoordinatorPhone" placeholder="9876543210" />
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="flex items-center space-x-2">
                         <input type="checkbox" id="showOnHighlights" name="showOnHighlights" className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
                         <Label htmlFor="showOnHighlights">Show on Highlights</Label>

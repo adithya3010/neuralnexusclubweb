@@ -11,7 +11,6 @@ import { Menu, X, ArrowRight } from "lucide-react"
 const navItems = [
     { name: "Home", path: "/" },
     { name: "Events", path: "/events" },
-    { name: "Achievements", path: "/achievements" },
     { name: "About Event", path: "/about" },
 ]
 

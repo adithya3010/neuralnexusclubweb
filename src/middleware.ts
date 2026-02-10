@@ -17,6 +17,21 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/admin/dashboard", request.url))
     }
 
+    // --- Event Admin Middleware ---
+    const eventToken = request.cookies.get("event_token")
+    const isEventLoginPage = request.nextUrl.pathname === "/event-login"
+
+    if (request.nextUrl.pathname.startsWith("/event-admin")) {
+        if (!eventToken) {
+            return NextResponse.redirect(new URL("/event-login", request.url))
+        }
+        // Ideally verify JWT here or in layout, but existence check is basic first step for middleware
+    }
+
+    if (isEventLoginPage && eventToken) {
+        return NextResponse.redirect(new URL("/event-admin/dashboard", request.url))
+    }
+
     return NextResponse.next()
 }
 

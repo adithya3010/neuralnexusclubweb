@@ -29,6 +29,12 @@ model Event {
   feeType          String   @default("free") // 'free', 'per_person', 'fixed_team', 'tiered'
   feeAmount        Int      @default(0)
   tieredPrices     Json?    // Stores map: {"1": 100, "2": 200, ...}
+  password         String?  // Password for event admin login
+  whatsappLink     String?
+  facultyCoordinatorName  String?
+  facultyCoordinatorPhone String?
+  studentCoordinatorName  String?
+  studentCoordinatorPhone String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
