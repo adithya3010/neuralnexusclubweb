@@ -87,14 +87,31 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                                         <Users className="h-4 w-4 text-primary" />
                                         <span>Team Size: {event.teamSize}</span>
                                     </div>
-                                    <div className="flex items-center gap-3 text-sm">
-                                        <div className="h-4 w-4 flex items-center justify-center font-bold text-primary">₹</div>
-                                        <span>
-                                            {event.feeType === 'free' ? 'Free Registration' :
-                                                event.feeType === 'per_person' ? `₹${event.feeAmount} / Person` :
-                                                    event.feeType === 'fixed_team' ? `₹${event.feeAmount} / Team` :
-                                                        'Tiered Pricing (Based on Team Size)'}
-                                        </span>
+                                    <div className="flex items-start gap-3 text-sm">
+                                        <div className="h-4 w-4 flex items-center justify-center font-bold text-primary mt-0.5">₹</div>
+                                        <div className="flex flex-col gap-1">
+                                            {event.feeType === 'free' ? (
+                                                <span>Free Registration</span>
+                                            ) : event.feeType === 'per_person' ? (
+                                                <span>₹{event.feeAmount} / Person</span>
+                                            ) : event.feeType === 'fixed_team' ? (
+                                                <span>₹{event.feeAmount} / Team</span>
+                                            ) : event.feeType === 'tiered' && event.tieredPrices ? (
+                                                <div className="flex flex-col gap-1">
+                                                    <span className="font-medium text-primary">Tiered Pricing:</span>
+                                                    {Object.entries(event.tieredPrices)
+                                                        .sort(([a], [b]) => Number(a) - Number(b))
+                                                        .map(([size, price]) => (
+                                                            <div key={size} className="flex items-center gap-2 text-muted-foreground">
+                                                                <span className="w-16">Size {size}:</span>
+                                                                <span className="text-white">₹{price}</span>
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                            ) : (
+                                                <span>Price details unavailable</span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
