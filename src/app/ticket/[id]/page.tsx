@@ -108,12 +108,26 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
     let isEventMismatch = false;
 
     if (eventAdmin && !isAdmin) {
-        // Strict check
-        // Note: ticket.event comes from Sheet, eventAdmin.title comes from DB. 
-        // Usage of "title" in token payload ensures we compare names.
-        // String comparison might be fragile if titles change, but it's what we have in the sheet.
-        // ideally we would store slug in sheet.
-        if (ticket.event.trim().toLowerCase() !== eventAdmin.title.trim().toLowerCase()) {
+        // Strict check replaced with improved logic
+        // ticket.event is likely the Title from the Google Sheet.
+        // eventAdmin.title is the Title from the JWT.
+        // eventAdmin.slug is the Slug from the JWT.
+
+        // 1. Try direct title match (case-insensitive)
+        const ticketEventLower = ticket.event.trim().toLowerCase();
+        const adminTitleLower = eventAdmin.title.trim().toLowerCase();
+        const adminSlugLower = eventAdmin.slug.trim().toLowerCase();
+
+        if (ticketEventLower !== adminTitleLower && ticketEventLower !== adminSlugLower) {
+            // 2. If no match, try fetching event by slug (from admin token) and check if that event's title matches ticket
+            // This handles cases where JWT title might be slightly different or outdated, OR if ticket used slug.
+            // But we can't easily fetch event here without importing store which might be server-side restricted? 
+            // modifying imports in this file might be safer.
+            // Actually, let's just allow if it matches EITHER slug OR title.
+            // The error message "This ticket is for xai-workshop" suggests the ticket sheet HAS the slug "xai-workshop".
+            // But the admin token has title "XAi Workshop".
+            // So comparing ticket.event (slug) vs admin.slug should fix it.
+
             isEventMismatch = true;
         }
     }
