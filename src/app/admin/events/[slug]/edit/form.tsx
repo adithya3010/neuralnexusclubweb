@@ -218,6 +218,7 @@ export function EditEventForm({ event }: { event: Event }) {
                     />
                 </div>
 
+                {/* Coordinator & Extras Section */}
                 <div className="space-y-4 border rounded-lg p-4 bg-white/5">
                     <h3 className="text-lg font-semibold">Event Admin & details</h3>
 
@@ -232,26 +233,60 @@ export function EditEventForm({ event }: { event: Event }) {
                         <Input id="whatsappLink" name="whatsappLink" defaultValue={event.whatsappLink || ""} placeholder="https://chat.whatsapp.com/..." />
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="facultyCoordinatorName">Faculty Coordinator Name</Label>
-                            <Input id="facultyCoordinatorName" name="facultyCoordinatorName" defaultValue={event.facultyCoordinatorName || ""} placeholder="Dr. Smith" />
+                    {/* Faculty Coordinators */}
+                    <div className="space-y-3 pt-2">
+                        <Label className="text-secondary">Faculty Coordinators</Label>
+                        <div id="faculty-coordinators-container" className="space-y-2">
+                            {(event.facultyCoordinators && event.facultyCoordinators.length > 0 ? event.facultyCoordinators : [{ name: "", phone: "" }]).map((coordinator, index) => (
+                                <div key={index} className="grid md:grid-cols-2 gap-4">
+                                    <Input name={`facultyCoordinatorName_${index}`} defaultValue={coordinator.name} placeholder="Name" />
+                                    <Input name={`facultyCoordinatorPhone_${index}`} defaultValue={coordinator.phone} placeholder="Phone" />
+                                </div>
+                            ))}
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="facultyCoordinatorPhone">Faculty Coordinator Phone</Label>
-                            <Input id="facultyCoordinatorPhone" name="facultyCoordinatorPhone" defaultValue={event.facultyCoordinatorPhone || ""} placeholder="9876543210" />
-                        </div>
+                        <Button type="button" variant="outline" size="sm" onClick={() => {
+                            const container = document.getElementById('faculty-coordinators-container');
+                            if (container) {
+                                const index = container.children.length;
+                                const div = document.createElement('div');
+                                div.className = "grid md:grid-cols-2 gap-4";
+                                div.innerHTML = `
+                                        <input type="text" name="facultyCoordinatorName_${index}" placeholder="Name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                        <input type="text" name="facultyCoordinatorPhone_${index}" placeholder="Phone" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                    `;
+                                container.appendChild(div);
+                            }
+                        }}>
+                            + Add Faculty Coordinator
+                        </Button>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="studentCoordinatorName">Student Coordinator Name</Label>
-                            <Input id="studentCoordinatorName" name="studentCoordinatorName" defaultValue={event.studentCoordinatorName || ""} placeholder="John Doe" />
+                    {/* Student Coordinators */}
+                    <div className="space-y-3 pt-2">
+                        <Label className="text-secondary">Student Coordinators</Label>
+                        <div id="student-coordinators-container" className="space-y-2">
+                            {(event.studentCoordinators && event.studentCoordinators.length > 0 ? event.studentCoordinators : [{ name: "", phone: "" }]).map((coordinator, index) => (
+                                <div key={index} className="grid md:grid-cols-2 gap-4">
+                                    <Input name={`studentCoordinatorName_${index}`} defaultValue={coordinator.name} placeholder="Name" />
+                                    <Input name={`studentCoordinatorPhone_${index}`} defaultValue={coordinator.phone} placeholder="Phone" />
+                                </div>
+                            ))}
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="studentCoordinatorPhone">Student Coordinator Phone</Label>
-                            <Input id="studentCoordinatorPhone" name="studentCoordinatorPhone" defaultValue={event.studentCoordinatorPhone || ""} placeholder="9876543210" />
-                        </div>
+                        <Button type="button" variant="outline" size="sm" onClick={() => {
+                            const container = document.getElementById('student-coordinators-container');
+                            if (container) {
+                                const index = container.children.length;
+                                const div = document.createElement('div');
+                                div.className = "grid md:grid-cols-2 gap-4";
+                                div.innerHTML = `
+                                        <input type="text" name="studentCoordinatorName_${index}" placeholder="Name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                        <input type="text" name="studentCoordinatorPhone_${index}" placeholder="Phone" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                    `;
+                                container.appendChild(div);
+                            }
+                        }}>
+                            + Add Student Coordinator
+                        </Button>
                     </div>
                 </div>
 

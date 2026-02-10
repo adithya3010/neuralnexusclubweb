@@ -116,6 +116,18 @@ export default async function EventAdminDashboard() {
                             </div>
                         </GlassCard>
                     </Link>
+
+                    <Link href="/event-admin/edit" className="group md:col-span-2">
+                        <GlassCard className="p-8 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-center space-x-6 h-full border-amber-500/30 hover:border-amber-500/60">
+                            <div className="h-16 w-16 rounded-full bg-amber-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <ClipboardList className="h-8 w-8 text-amber-400" />
+                            </div>
+                            <div className="text-left">
+                                <h2 className="text-2xl font-semibold mb-2 text-amber-100">Edit Event Details</h2>
+                                <p className="text-muted-foreground">Update description, rules, coordinators, and settings.</p>
+                            </div>
+                        </GlassCard>
+                    </Link>
                 </div>
             </div>
         </div>

@@ -118,6 +118,22 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
             await doc.loadInfo();
             const sheet = doc.sheetsByIndex[0];
 
+            // Fetch event to calculate fee
+            const event = await import("@/lib/store").then(m => m.eventStore.getBySlug(eventSlug));
+            let amount = 0;
+            if (event) {
+                if (event.feeType === 'per_person') {
+                    amount = (event.feeAmount || 0) * (members.length + 1); // +1 for lead
+                } else if (event.feeType === 'fixed_team') {
+                    amount = event.feeAmount || 0;
+                } else if (event.feeType === 'tiered') {
+                    // Tiered logic: simplistic assumption or need more complex logic?
+                    // Usually tiered is per team size.
+                    const teamSize = members.length + 1;
+                    amount = event.tieredPrices?.[teamSize.toString()] || event.feeAmount || 0;
+                }
+            }
+
             // Check for headers and add if missing
             await sheet.loadHeaderRow().catch(async () => {
                 await sheet.setHeaderRow([
@@ -133,7 +149,8 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
                     "Lead Year",
                     "Members",
                     "Screenshot",
-                    "UTR ID"
+                    "UTR ID",
+                    "Amount"
                 ]);
             });
 
@@ -153,7 +170,8 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
                 "Lead Year": leadYear,
                 Members: membersString,
                 "Screenshot": screenshotLink,
-                "UTR ID": (rawData.utrId as string) || ''
+                "UTR ID": (rawData.utrId as string) || '',
+                "Amount": amount.toString()
             });
         } catch (error: any) {
             console.error("Sheet Error:", error);

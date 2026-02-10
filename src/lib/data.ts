@@ -19,10 +19,8 @@ export interface Event {
     tieredPrices?: Record<string, number>
     password?: string
     whatsappLink?: string
-    facultyCoordinatorName?: string
-    facultyCoordinatorPhone?: string
-    studentCoordinatorName?: string
-    studentCoordinatorPhone?: string
+    facultyCoordinators?: { name: string, phone: string }[]
+    studentCoordinators?: { name: string, phone: string }[]
 }
 
 export const events: Event[] = [

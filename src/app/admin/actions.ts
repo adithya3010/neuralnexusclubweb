@@ -11,6 +11,9 @@ import { SignJWT, jwtVerify } from 'jose';
 // Secret key for JWT
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'neural-nexus-secret-key-change-me');
 
+import { revalidatePath } from "next/cache"
+import { prisma, eventStore } from "@/lib/store"
+
 export async function login(prevState: any, formData: FormData) {
     const username = formData.get("username")
     const password = formData.get("password")
@@ -54,7 +57,7 @@ export async function loginEvent(prevState: any, formData: FormData) {
         }
 
         // Check if password matches
-        if (event.password !== password) {
+        if ((event as any).password !== password) {
             return { error: "Invalid password for this event." };
         }
 
@@ -104,10 +107,118 @@ export async function verifyEventToken() {
     }
 }
 
-// --- End Event Admin Authentication ---
+// --- Faculty Authentication ---
 
-import { revalidatePath } from "next/cache"
-import { eventStore } from "@/lib/store"
+export async function loginFacultyAction(prevState: any, formData: FormData) {
+    const facultyId = formData.get("facultyId") as string
+    const password = formData.get("password") as string
+
+    if (!facultyId || !password) {
+        return { error: "Please enter both Faculty ID and Password." }
+    }
+
+    try {
+        const faculty = await (prisma as any).faculty.findUnique({
+            where: { facultyId }
+        })
+
+        if (!faculty || faculty.password !== password) {
+            return { error: "Invalid credentials." }
+        }
+
+        // Generate JWT
+        const alg = 'HS256'
+        const jwt = await new SignJWT({ facultyId: faculty.facultyId, name: faculty.name })
+            .setProtectedHeader({ alg })
+            .setIssuedAt()
+            .setExpirationTime('24h')
+            .sign(JWT_SECRET)
+
+        const cookieStore = await cookies()
+        cookieStore.set("faculty_session", jwt, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 60 * 60 * 24,
+            path: "/"
+        })
+
+    } catch (error) {
+        console.error("Faculty login error:", error)
+        return { error: "Login failed." }
+    }
+
+    redirect("/faculty/dashboard")
+}
+
+export async function logoutFaculty() {
+    (await cookies()).delete("faculty_session")
+    redirect("/faculty-login")
+}
+
+export async function verifyFacultyToken() {
+    const cookieStore = await cookies()
+    const token = cookieStore.get("faculty_session")?.value
+
+    if (!token) return null
+
+    try {
+        const { payload } = await jwtVerify(token, JWT_SECRET)
+        return payload as { facultyId: string; name: string }
+    } catch (error) {
+        return null
+    }
+}
+
+// --- Faculty Management (Admin) ---
+
+export async function createFacultyAction(prevState: any, formData: FormData) {
+    // Verify Admin
+    const cookieStore = await cookies()
+    const isAdmin = cookieStore.get("admin_session")?.value === "true"
+    if (!isAdmin) return { error: "Unauthorized" }
+
+    const facultyId = formData.get("facultyId") as string
+    const name = formData.get("name") as string
+    const password = formData.get("password") as string
+
+    if (!facultyId || !name || !password) {
+        return { error: "All fields are required." }
+    }
+
+    try {
+        await (prisma as any).faculty.create({
+            data: { facultyId, name, password }
+        })
+        revalidatePath("/admin/dashboard")
+        return { success: true }
+    } catch (error) {
+        console.error("Create faculty failed:", error)
+        return { error: "Failed to create faculty (ID might be taken)." }
+    }
+}
+
+export async function deleteFacultyAction(prevState: any, formData: FormData) {
+    // Verify Admin
+    const cookieStore = await cookies()
+    const isAdmin = cookieStore.get("admin_session")?.value === "true"
+    if (!isAdmin) return { error: "Unauthorized" }
+
+    const id = formData.get("id") as string
+    if (!id) return { error: "ID missing" }
+
+    try {
+        await (prisma as any).faculty.delete({
+            where: { id }
+        })
+        revalidatePath("/admin/dashboard")
+        return { success: true }
+    } catch (error) {
+        return { error: "Failed to delete." }
+    }
+}
+
+// --- End Faculty Management ---
+
 
 // Helper to upload image to Cloudinary
 async function uploadEventImage(imageFile: File, slug: string): Promise<string | null> {
@@ -142,6 +253,60 @@ export async function updateEventAction(prevState: { error: string }, formData: 
 
     if (!slug) return { error: "Event slug missing" }
 
+    // Security Check: Admin or Event Owner
+    const cookieStore = await cookies()
+    const isAdmin = cookieStore.get("admin_session")?.value === "true"
+    let isEventOwner = false
+
+    if (!isAdmin) {
+        const eventToken = cookieStore.get("event_token")?.value
+        if (eventToken) {
+            try {
+                const { payload } = await jwtVerify(eventToken, JWT_SECRET)
+                if ((payload as any).slug === slug) {
+                    isEventOwner = true
+                }
+            } catch (e) { }
+        }
+
+        if (!isEventOwner) {
+            return { error: "Unauthorized" }
+        }
+    }
+
+
+
+    // --- Helper to parse coordinators ---
+    const parseCoordinators = (formData: FormData, type: 'faculty' | 'student') => {
+        const coordinators = [];
+        let index = 0;
+        while (true) {
+            const nameKey = `${type}CoordinatorName_${index}`;
+            const phoneKey = `${type}CoordinatorPhone_${index}`;
+            const name = formData.get(nameKey) as string;
+            const phone = formData.get(phoneKey) as string;
+
+            if (name || phone) {
+                coordinators.push({ name: name || "", phone: phone || "" });
+            } else {
+                // strict check: if both specific index fields are null/undefined, stop?
+                // But form might send disjointed indices if we just append?
+                // The current form implementation appends valid indices sequentially based on container length.
+                // But if we want to be safe against holes, maybe search until a max?
+                // Let's search up to 20 to be safe, or break if we find 5 empty slots in a row?
+                // Simple approach: Check up to 20.
+                if (index > 20) break;
+            }
+            index++;
+        }
+        // Filter out empty ones just in case
+        return coordinators.filter(c => c.name.trim() !== "" || c.phone.trim() !== "");
+    };
+
+    const facultyCoordinators = parseCoordinators(formData, 'faculty');
+    const studentCoordinators = parseCoordinators(formData, 'student');
+
+
     const updates: any = {
         title: formData.get("title") as string,
         date: formData.get("date") as string,
@@ -161,10 +326,8 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         // New Fields
         password: formData.get("password") as string,
         whatsappLink: formData.get("whatsappLink") as string,
-        facultyCoordinatorName: formData.get("facultyCoordinatorName") as string,
-        facultyCoordinatorPhone: formData.get("facultyCoordinatorPhone") as string,
-        studentCoordinatorName: formData.get("studentCoordinatorName") as string,
-        studentCoordinatorPhone: formData.get("studentCoordinatorPhone") as string,
+        facultyCoordinators: facultyCoordinators,
+        studentCoordinators: studentCoordinators,
     }
 
     // Handle Tiered Prices
@@ -204,7 +367,11 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         console.error("Update failed:", error)
         return { error: "Failed to update event." }
     }
-    redirect("/admin/dashboard")
+    if (isAdmin) {
+        redirect("/admin/dashboard")
+    } else {
+        redirect("/event-admin/dashboard")
+    }
 }
 
 export async function createEventAction(prevState: any, formData: FormData): Promise<{ error: string }> {
@@ -214,6 +381,28 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
     if (await eventStore.getBySlug(slug)) {
         return { error: "Event with this title already exists." }
     }
+
+    // --- Helper to parse coordinators ---
+    const parseCoordinators = (formData: FormData, type: 'faculty' | 'student') => {
+        const coordinators = [];
+        let index = 0;
+        // Search for up to 20 potential entries
+        while (index < 20) {
+            const nameKey = `${type}CoordinatorName_${index}`;
+            const phoneKey = `${type}CoordinatorPhone_${index}`;
+            const name = formData.get(nameKey) as string;
+            const phone = formData.get(phoneKey) as string;
+
+            if (name || phone) {
+                coordinators.push({ name: name || "", phone: phone || "" });
+            }
+            index++;
+        }
+        return coordinators.filter(c => c.name.trim() !== "" || c.phone.trim() !== "");
+    };
+
+    const facultyCoordinators = parseCoordinators(formData, 'faculty');
+    const studentCoordinators = parseCoordinators(formData, 'student');
 
     const registrationType = (formData.get("registrationType") as "website" | "google_form") || "website";
     const googleFormUrl = (formData.get("googleFormUrl") as string) || "";
@@ -246,10 +435,8 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
         // New Fields
         password: formData.get("password") as string,
         whatsappLink: formData.get("whatsappLink") as string,
-        facultyCoordinatorName: formData.get("facultyCoordinatorName") as string,
-        facultyCoordinatorPhone: formData.get("facultyCoordinatorPhone") as string,
-        studentCoordinatorName: formData.get("studentCoordinatorName") as string,
-        studentCoordinatorPhone: formData.get("studentCoordinatorPhone") as string,
+        facultyCoordinators: facultyCoordinators,
+        studentCoordinators: studentCoordinators,
     }
 
     try {

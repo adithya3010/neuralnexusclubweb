@@ -210,26 +210,56 @@ export default function CreateEventPage() {
                             <Input id="whatsappLink" name="whatsappLink" placeholder="https://chat.whatsapp.com/..." />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="facultyCoordinatorName">Faculty Coordinator Name</Label>
-                                <Input id="facultyCoordinatorName" name="facultyCoordinatorName" placeholder="Dr. Smith" />
+                        {/* Faculty Coordinators */}
+                        <div className="space-y-3 pt-2">
+                            <Label className="text-secondary">Faculty Coordinators</Label>
+                            <div id="faculty-coordinators-container" className="space-y-2">
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <Input name="facultyCoordinatorName_0" placeholder="Name" />
+                                    <Input name="facultyCoordinatorPhone_0" placeholder="Phone" />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="facultyCoordinatorPhone">Faculty Coordinator Phone</Label>
-                                <Input id="facultyCoordinatorPhone" name="facultyCoordinatorPhone" placeholder="9876543210" />
-                            </div>
+                            <Button type="button" variant="outline" size="sm" onClick={() => {
+                                const container = document.getElementById('faculty-coordinators-container');
+                                if (container) {
+                                    const index = container.children.length;
+                                    const div = document.createElement('div');
+                                    div.className = "grid md:grid-cols-2 gap-4";
+                                    div.innerHTML = `
+                                        <input type="text" name="facultyCoordinatorName_${index}" placeholder="Name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                        <input type="text" name="facultyCoordinatorPhone_${index}" placeholder="Phone" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                    `;
+                                    container.appendChild(div);
+                                }
+                            }}>
+                                + Add Faculty Coordinator
+                            </Button>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="studentCoordinatorName">Student Coordinator Name</Label>
-                                <Input id="studentCoordinatorName" name="studentCoordinatorName" placeholder="John Doe" />
+                        {/* Student Coordinators */}
+                        <div className="space-y-3 pt-2">
+                            <Label className="text-secondary">Student Coordinators</Label>
+                            <div id="student-coordinators-container" className="space-y-2">
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <Input name="studentCoordinatorName_0" placeholder="Name" />
+                                    <Input name="studentCoordinatorPhone_0" placeholder="Phone" />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="studentCoordinatorPhone">Student Coordinator Phone</Label>
-                                <Input id="studentCoordinatorPhone" name="studentCoordinatorPhone" placeholder="9876543210" />
-                            </div>
+                            <Button type="button" variant="outline" size="sm" onClick={() => {
+                                const container = document.getElementById('student-coordinators-container');
+                                if (container) {
+                                    const index = container.children.length;
+                                    const div = document.createElement('div');
+                                    div.className = "grid md:grid-cols-2 gap-4";
+                                    div.innerHTML = `
+                                        <input type="text" name="studentCoordinatorName_${index}" placeholder="Name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                        <input type="text" name="studentCoordinatorPhone_${index}" placeholder="Phone" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                    `;
+                                    container.appendChild(div);
+                                }
+                            }}>
+                                + Add Student Coordinator
+                            </Button>
                         </div>
                     </div>
 

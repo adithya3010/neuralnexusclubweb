@@ -31,10 +31,17 @@ model Event {
   tieredPrices     Json?    // Stores map: {"1": 100, "2": 200, ...}
   password         String?  // Password for event admin login
   whatsappLink     String?
-  facultyCoordinatorName  String?
-  facultyCoordinatorPhone String?
-  studentCoordinatorName  String?
-  studentCoordinatorPhone String?
+  facultyCoordinators Json?    // Stores array of { name: string, phone: string }
+  studentCoordinators Json?    // Stores array of { name: string, phone: string }
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+}
+
+model Faculty {
+  id        String   @id @default(uuid())
+  facultyId String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

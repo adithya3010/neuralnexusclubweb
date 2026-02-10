@@ -66,30 +66,38 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                             </GlassCard>
 
                             {/* Coordinator Details */}
-                            {(event.facultyCoordinatorName || event.studentCoordinatorName) && (
+                            {((event.facultyCoordinators && event.facultyCoordinators.length > 0) || (event.studentCoordinators && event.studentCoordinators.length > 0)) && (
                                 <GlassCard className="p-8 space-y-6">
                                     <h2 className="text-2xl font-bold mb-4">Coordinators</h2>
                                     <div className="grid md:grid-cols-2 gap-6">
-                                        {event.facultyCoordinatorName && (
+                                        {event.facultyCoordinators && event.facultyCoordinators.length > 0 && (
                                             <div className="space-y-2">
-                                                <h3 className="text-lg font-semibold text-primary">Faculty Coordinator</h3>
-                                                <div className="bg-white/5 p-4 rounded-lg">
-                                                    <p className="font-medium">{event.facultyCoordinatorName}</p>
-                                                    {event.facultyCoordinatorPhone && (
-                                                        <p className="text-sm text-muted-foreground">{event.facultyCoordinatorPhone}</p>
-                                                    )}
+                                                <h3 className="text-lg font-semibold text-primary">Faculty Coordinators</h3>
+                                                <div className="space-y-2">
+                                                    {event.facultyCoordinators.map((coordinator, i) => (
+                                                        <div key={i} className="bg-white/5 p-4 rounded-lg">
+                                                            <p className="font-medium">{coordinator.name}</p>
+                                                            {coordinator.phone && (
+                                                                <p className="text-sm text-muted-foreground">{coordinator.phone}</p>
+                                                            )}
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         )}
 
-                                        {event.studentCoordinatorName && (
+                                        {event.studentCoordinators && event.studentCoordinators.length > 0 && (
                                             <div className="space-y-2">
-                                                <h3 className="text-lg font-semibold text-primary">Student Coordinator</h3>
-                                                <div className="bg-white/5 p-4 rounded-lg">
-                                                    <p className="font-medium">{event.studentCoordinatorName}</p>
-                                                    {event.studentCoordinatorPhone && (
-                                                        <p className="text-sm text-muted-foreground">{event.studentCoordinatorPhone}</p>
-                                                    )}
+                                                <h3 className="text-lg font-semibold text-primary">Student Coordinators</h3>
+                                                <div className="space-y-2">
+                                                    {event.studentCoordinators.map((coordinator, i) => (
+                                                        <div key={i} className="bg-white/5 p-4 rounded-lg">
+                                                            <p className="font-medium">{coordinator.name}</p>
+                                                            {coordinator.phone && (
+                                                                <p className="text-sm text-muted-foreground">{coordinator.phone}</p>
+                                                            )}
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         )}
