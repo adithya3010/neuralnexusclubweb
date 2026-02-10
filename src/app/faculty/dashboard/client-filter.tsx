@@ -68,32 +68,52 @@ export function ClientFilter({ events, participants, eventStats }: Props) {
                             <TableRow>
                                 <TableHead>Event</TableHead>
                                 <TableHead>Ticket ID</TableHead>
-                                <TableHead>Lead Name</TableHead>
+                                <TableHead>Lead Name / Roll</TableHead>
+                                <TableHead>Members</TableHead>
+                                <TableHead>UTR ID</TableHead>
+                                <TableHead>Payment</TableHead>
                                 <TableHead>Amount</TableHead>
-                                <TableHead>Registered At</TableHead>
+                                <TableHead>At</TableHead>
                                 <TableHead>Attended</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {filteredParticipants.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                                    <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
                                         No participants found.
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 filteredParticipants.map((p, i) => (
                                     <TableRow key={i}>
-                                        <TableCell className="font-medium">{p.eventTitle}</TableCell>
+                                        <TableCell className="font-medium text-xs">{p.eventTitle}</TableCell>
                                         <TableCell className="font-mono text-xs">{p.ticketId}</TableCell>
-                                        <TableCell>{p.leadName}</TableCell>
+                                        <TableCell>
+                                            <div className="font-medium text-sm">{p.leadName}</div>
+                                            <div className="text-xs text-muted-foreground">{p.leadRoll}</div>
+                                        </TableCell>
+                                        <TableCell className="text-xs max-w-[150px] truncate" title={p.members}>{p.members || "-"}</TableCell>
+                                        <TableCell className="text-xs font-mono">{p.utrId || "-"}</TableCell>
+                                        <TableCell>
+                                            {p.screenshot ? (
+                                                <a
+                                                    href={p.screenshot}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center justify-center rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-7 px-2"
+                                                >
+                                                    View
+                                                </a>
+                                            ) : <span className="text-xs text-muted-foreground">N/A</span>}
+                                        </TableCell>
                                         <TableCell>₹{p.amount}</TableCell>
-                                        <TableCell>{p.timestamp}</TableCell>
+                                        <TableCell className="text-xs text-muted-foreground">{new Date(p.timestamp).toLocaleDateString()}</TableCell>
                                         <TableCell>
                                             {p.attended === "Yes" ? (
-                                                <span className="text-green-400 font-bold">Yes</span>
+                                                <span className="text-green-400 font-bold text-xs">Yes</span>
                                             ) : (
-                                                <span className="text-red-400">No</span>
+                                                <span className="text-red-400 text-xs">No</span>
                                             )}
                                         </TableCell>
                                     </TableRow>

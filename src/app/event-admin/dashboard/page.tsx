@@ -7,7 +7,7 @@ import { QrCode, LogOut, Users, CheckCircle, ClipboardList } from "lucide-react"
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 
-async function getEventStats(eventTitle: string) {
+async function getEventStats(eventSlug: string) {
     try {
         const key = process.env.GOOGLE_PRIVATE_KEY || '';
         const cleanedKey = key.replace(/\\n/g, '\n').replace(/"/g, '');
@@ -23,7 +23,7 @@ async function getEventStats(eventTitle: string) {
         const sheet = doc.sheetsByIndex[0];
         const rows = await sheet.getRows();
 
-        const eventRows = rows.filter(row => row.get("Event") === eventTitle);
+        const eventRows = rows.filter(row => row.get("Event") === eventSlug);
         const totalRegistrations = eventRows.length;
         const totalCheckedIn = eventRows.filter(row => row.get("Attended") === "Yes").length;
 
@@ -44,7 +44,7 @@ export default async function EventAdminDashboard() {
         redirect("/event-login")
     }
 
-    const stats = await getEventStats(eventPayload.title);
+    const stats = await getEventStats(eventPayload.slug);
 
     return (
         <div className="min-h-screen p-8">

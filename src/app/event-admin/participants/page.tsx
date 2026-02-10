@@ -15,7 +15,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-async function getEventParticipants(eventTitle: string) {
+async function getEventParticipants(eventSlug: string) {
     try {
         const key = process.env.GOOGLE_PRIVATE_KEY || '';
         const cleanedKey = key.replace(/\\n/g, '\n').replace(/"/g, '');
@@ -31,17 +31,20 @@ async function getEventParticipants(eventTitle: string) {
         const sheet = doc.sheetsByIndex[0];
         const rows = await sheet.getRows();
 
-        // Filter rows by event title
+        // Filter rows by event slug
         return rows
-            .filter(row => row.get("Event") === eventTitle)
+            .filter(row => row.get("Event") === eventSlug)
             .map(row => ({
                 ticketId: row.get("Ticket ID"),
                 leadName: row.get("Lead Name"),
                 leadRoll: row.get("Lead Roll"),
-                leadPhone: row.get("Lead Phone"), // Assuming this column exists, need to verify
+                leadPhone: row.get("Lead Phone"),
                 teamName: row.get("Team Name"),
                 attended: row.get("Attended"),
                 timestamp: row.get("Timestamp"),
+                members: row.get("Members"),
+                screenshot: row.get("Screenshot"),
+                utrId: row.get("UTR ID"),
             }))
             .reverse(); // Show newest first
     } catch (error) {
@@ -57,14 +60,14 @@ export default async function ParticipantsPage() {
         redirect("/event-login")
     }
 
-    const participants = await getEventParticipants(eventPayload.title);
+    const participants = await getEventParticipants(eventPayload.slug);
 
     return (
         <div className="min-h-screen p-8">
             {/* Background Blob */}
             <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="max-w-6xl mx-auto space-y-8 relative z-10">
+            <div className="max-w-7xl mx-auto space-y-8 relative z-10">
                 <header className="flex justify-between items-center bg-white/5 p-6 rounded-xl border border-white/10">
                     <div className="flex items-center gap-4">
                         <Link href="/event-admin/dashboard">
@@ -79,13 +82,15 @@ export default async function ParticipantsPage() {
                     </div>
                 </header>
 
-                <GlassCard className="p-6">
+                <GlassCard className="p-6 overflow-x-auto">
                     <Table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Ticket ID</TableHead>
                                 <TableHead>Team / Lead</TableHead>
-                                <TableHead>Roll Number</TableHead>
+                                <TableHead>Members</TableHead>
+                                <TableHead>UTR ID</TableHead>
+                                <TableHead>Payment</TableHead>
                                 <TableHead>Registered At</TableHead>
                                 <TableHead>Status</TableHead>
                             </TableRow>
@@ -97,8 +102,21 @@ export default async function ParticipantsPage() {
                                     <TableCell>
                                         <div className="font-medium">{p.leadName}</div>
                                         {p.teamName && <div className="text-xs text-muted-foreground">{p.teamName}</div>}
+                                        <div className="text-xs text-muted-foreground">{p.leadRoll}</div>
                                     </TableCell>
-                                    <TableCell className="text-xs">{p.leadRoll}</TableCell>
+                                    <TableCell className="text-xs max-w-[200px] truncate" title={p.members}>{p.members || "-"}</TableCell>
+                                    <TableCell className="text-xs font-mono">{p.utrId || "-"}</TableCell>
+                                    <TableCell>
+                                        {p.screenshot ? (
+                                            <Button variant="outline" size="sm" asChild className="h-7 text-xs">
+                                                <a href={p.screenshot} target="_blank" rel="noopener noreferrer">
+                                                    View
+                                                </a>
+                                            </Button>
+                                        ) : (
+                                            <span className="text-xs text-muted-foreground">N/A</span>
+                                        )}
+                                    </TableCell>
                                     <TableCell className="text-xs text-muted-foreground">{p.timestamp}</TableCell>
                                     <TableCell>
                                         {p.attended === "Yes" ? (
@@ -113,6 +131,7 @@ export default async function ParticipantsPage() {
                                     </TableCell>
                                 </TableRow>
                             ))}
+
                             {participants.length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">

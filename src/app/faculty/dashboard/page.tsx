@@ -29,9 +29,13 @@ async function getAllParticipants() {
             eventSlug: row.get("Event"), // This is the SLUG
             ticketId: row.get("Ticket ID"),
             leadName: row.get("Lead Name"),
+            leadRoll: row.get("Lead Roll"),
             attended: row.get("Attended"),
             timestamp: row.get("Timestamp"),
-            amount: parseFloat(row.get("Amount") || "0")
+            amount: parseFloat(row.get("Amount") || "0"),
+            members: row.get("Members"),
+            screenshot: row.get("Screenshot"),
+            utrId: row.get("UTR ID"),
         })).reverse();
     } catch (error) {
         console.error("Error fetching participants:", error);
