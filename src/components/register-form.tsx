@@ -202,7 +202,7 @@ export function RegisterForm({ event, eventSlug }: RegisterFormProps) {
 
                     <div className="flex flex-col gap-3 w-full">
                         <Button onClick={downloadTicket} variant="outline" className="w-full">
-                            <Download className="mr-2 h-4 w-4" /> Download Professional Ticket
+                            <Download className="mr-2 h-4 w-4" /> Download Ticket
                         </Button>
 
                         {event?.whatsappLink && (
