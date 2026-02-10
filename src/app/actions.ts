@@ -130,7 +130,7 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
                     // Tiered logic: simplistic assumption or need more complex logic?
                     // Usually tiered is per team size.
                     const teamSize = members.length + 1;
-                    amount = event.tieredPrices?.[teamSize.toString()] || event.feeAmount || 0;
+                    amount = (event.tieredPrices as any)?.[teamSize.toString()] || event.feeAmount || 0;
                 }
             }
 

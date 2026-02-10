@@ -137,12 +137,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                                             ) : event.feeType === 'tiered' && event.tieredPrices ? (
                                                 <div className="flex flex-col gap-1">
                                                     <span className="font-medium text-primary">Tiered Pricing:</span>
-                                                    {Object.entries(event.tieredPrices)
+                                                    {Object.entries(event.tieredPrices as any)
                                                         .sort(([a], [b]) => Number(a) - Number(b))
                                                         .map(([size, price]) => (
                                                             <div key={size} className="flex items-center gap-2 text-muted-foreground">
                                                                 <span className="w-16">Size {size}:</span>
-                                                                <span className="text-white">₹{price}</span>
+                                                                <span className="text-white">₹{price as number}</span>
                                                             </div>
                                                         ))}
                                                 </div>
