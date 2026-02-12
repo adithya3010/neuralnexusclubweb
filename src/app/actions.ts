@@ -152,7 +152,8 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
                     "Members",
                     "Screenshot",
                     "UTR ID",
-                    "Amount"
+                    "Amount",
+                    "Drive Link"
                 ]);
             });
 
@@ -171,6 +172,7 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
                 "Lead Branch": leadBranch,
                 "Lead Year": leadYear,
                 Members: membersString,
+                "Drive Link": (rawData.driveLink as string) || '',
                 "Screenshot": screenshotLink,
                 "UTR ID": (rawData.utrId as string) || '',
                 "Amount": amount.toString()
