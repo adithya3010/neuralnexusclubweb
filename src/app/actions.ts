@@ -19,6 +19,7 @@ const formSchema = z.object({
     // Team Details
     teamName: z.string().optional(),
     eventSlug: z.string(),
+    driveLink: z.string().optional(),
 })
 
 export type RegistrationState = {
@@ -43,6 +44,7 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
             teamName: formData.get("teamName"),
             eventSlug: formData.get("eventSlug"),
             utrId: formData.get("utrId"),
+            driveLink: formData.get("driveLink"),
         }
 
         const validatedFields = formSchema.safeParse(rawData)
@@ -52,7 +54,7 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
             return { error: "Invalid lead details. Please check your inputs." }
         }
 
-        const { leadName, leadEmail, leadRoll, leadPhone, leadBranch, leadYear, teamName, eventSlug } = validatedFields.data
+        const { leadName, leadEmail, leadRoll, leadPhone, leadBranch, leadYear, teamName, eventSlug,driveLink} = validatedFields.data
 
         const members = []
         let memberIndex = 0
