@@ -379,7 +379,7 @@ const showDriveLink =
 {showDriveLink && (
     <div className="space-y-2">
         <Label htmlFor="driveLink">
-            Google Drive Link (Upload Screenshot & Paste Link)
+            Google Drive Link (Upload PPT & Paste Link)
         </Label>
         <Input
             id="driveLink"
