@@ -328,6 +328,7 @@ export async function updateEventAction(prevState: { error: string }, formData: 
         whatsappLink: formData.get("whatsappLink") as string,
         facultyCoordinators: facultyCoordinators,
         studentCoordinators: studentCoordinators,
+        pptTemplate: formData.get("pptTemplate") as string,
     }
 
     // Handle Tiered Prices
@@ -437,6 +438,7 @@ export async function createEventAction(prevState: any, formData: FormData): Pro
         whatsappLink: formData.get("whatsappLink") as string,
         facultyCoordinators: facultyCoordinators,
         studentCoordinators: studentCoordinators,
+        pptTemplate: formData.get("pptTemplate") as string,
     }
 
     try {

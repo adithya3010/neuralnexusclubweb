@@ -33,6 +33,7 @@ model Event {
   whatsappLink     String?
   facultyCoordinators Json?    // Stores array of { name: string, phone: string }
   studentCoordinators Json?    // Stores array of { name: string, phone: string }
+  pptTemplate      String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

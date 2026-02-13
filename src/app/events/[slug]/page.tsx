@@ -3,7 +3,8 @@ import Link from "next/link"
 import { eventStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/glass-card"
-import { Calendar, Clock, MapPin, Users, ArrowLeft } from "lucide-react"
+import { Calendar, Clock, MapPin, Users, ArrowLeft, Download } from "lucide-react"
+
 
 
 export const revalidate = 60
@@ -171,7 +172,17 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                                             Registration Closed
                                         </Button>
                                     )}
+
+                                    {event.pptTemplate && (
+                                        <Button variant="outline" size="lg" className="w-full mt-4" asChild>
+                                            <a href={event.pptTemplate} target="_blank" rel="noopener noreferrer">
+                                                <Download className="mr-2 h-4 w-4" />
+                                                Download PPT Template
+                                            </a>
+                                        </Button>
+                                    )}
                                 </div>
+
                             </GlassCard>
                         </div>
                     </div>

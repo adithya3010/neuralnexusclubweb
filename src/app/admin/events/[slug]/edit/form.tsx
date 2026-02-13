@@ -44,6 +44,12 @@ export function EditEventForm({ event }: { event: Event }) {
                 </div>
 
                 <div className="space-y-2">
+                    <Label htmlFor="pptTemplate">PPT Template URL (Optional)</Label>
+                    <Input id="pptTemplate" name="pptTemplate" defaultValue={event.pptTemplate || ""} placeholder="https://drive.google.com/..." />
+                    <p className="text-xs text-muted-foreground">Link to the presentation template (Google Drive, etc.).</p>
+                </div>
+
+                <div className="space-y-2">
                     <Label htmlFor="title">Event Title</Label>
                     <Input id="title" name="title" defaultValue={event.title} required />
                 </div>

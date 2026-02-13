@@ -21,6 +21,7 @@ export interface Event {
     whatsappLink?: string
     facultyCoordinators?: { name: string, phone: string }[]
     studentCoordinators?: { name: string, phone: string }[]
+    pptTemplate?: string
 }
 
 export const events: Event[] = [
@@ -36,7 +37,8 @@ export const events: Event[] = [
         maxTeamSize: 2,
         image: "/images/events/paper-presentation.jpg",
         status: "Open",
-        category: "Technical"
+        category: "Technical",
+        pptTemplate: "https://drive.google.com/drive/folders/10w-CedgLkcxNVxIAhbJCT0jDVUf6ni76"
     },
     {
         slug: "project-expo",
@@ -52,7 +54,23 @@ export const events: Event[] = [
         status: "Open",
         category: "Technical",
         registrationType: "google_form",
-        googleFormUrl: "https://docs.google.com/forms/u/0/" // Placeholder, replace with actual if provided
+        googleFormUrl: "https://docs.google.com/forms/u/0/", // Placeholder, replace with actual if provided
+        pptTemplate: "https://drive.google.com/drive/folders/10w-CedgLkcxNVxIAhbJCT0jDVUf6ni76"
+    },
+    {
+        slug: "poster-presentation",
+        title: "Poster Presentation",
+        shortDescription: "Visually present your research or project ideas.",
+        fullDescription: "A creative way to present your research, ideas, or projects through visual posters. Explain your concepts to judges and peers.",
+        date: "2025-03-15",
+        time: "11:00 AM",
+        venue: "Corridor A",
+        teamSize: "1-2",
+        maxTeamSize: 2,
+        image: "/images/events/poster-presentation.jpg",
+        status: "Open",
+        category: "Technical",
+        pptTemplate: "https://drive.google.com/drive/folders/10w-CedgLkcxNVxIAhbJCT0jDVUf6ni76"
     },
     {
         slug: "hackathon",
