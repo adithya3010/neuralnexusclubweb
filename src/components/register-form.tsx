@@ -47,15 +47,15 @@ export function RegisterForm({ event, eventSlug }: RegisterFormProps) {
     const formRef = useRef<HTMLFormElement>(null)
     const ticketRef = useRef<HTMLDivElement>(null)
 
-// Events that require Drive link
-const eventsRequiringDriveLink = [
-    "paper-presentation",
-    "project-expo",
-    "poster-presentation"
-]
+    // Events that require Drive link
+    const eventsRequiringDriveLink = [
+        "paper-presentation",
+        "project-expo",
+        "poster-presentation"
+    ]
 
-const showDriveLink =
-    eventSlug ? eventsRequiringDriveLink.includes(eventSlug) : false
+    const showDriveLink =
+        eventSlug ? eventsRequiringDriveLink.includes(eventSlug) : false
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
@@ -376,24 +376,23 @@ const showDriveLink =
 
                         {/* Step 3: Payment Verification */}
                         <div data-step="3" className={step === 3 ? "space-y-4 animate-in fade-in slide-in-from-right-4 duration-300" : "hidden"}>
-{showDriveLink && (
-    <div className="space-y-2">
-        <Label htmlFor="driveLink">
-            Google Drive Link (Upload PPT & Paste Link)
-        </Label>
-        <Input
-            id="driveLink"
-            name="driveLink"
-            type="url"
-            placeholder="https://drive.google.com/..."
-            required
-            pattern="https://drive\.google\.com/.*"
-        />
-        <p className="text-xs text-muted-foreground">
-            Make sure the link access is set to "Anyone with the link can view".
-        </p>
-    </div>
-)}
+                            {showDriveLink && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="driveLink">
+                                        Abstract / Project Link
+                                    </Label>
+                                    <Input
+                                        id="driveLink"
+                                        name="driveLink"
+                                        type="url"
+                                        placeholder="https://..."
+                                        required
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Please provide a publicly accessible link (Google Drive, GitHub, etc.)
+                                    </p>
+                                </div>
+                            )}
                             <div className="space-y-4">
                                 <h3 className="text-xl font-semibold border-b border-white/10 pb-2">Payment Verification</h3>
 

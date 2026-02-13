@@ -41,10 +41,10 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
             leadPhone: formData.get("leadPhone"),
             leadBranch: formData.get("leadBranch"),
             leadYear: formData.get("leadYear"),
-            teamName: formData.get("teamName"),
+            teamName: formData.get("teamName") || undefined,
             eventSlug: formData.get("eventSlug"),
             utrId: formData.get("utrId"),
-            driveLink: formData.get("driveLink"),
+            driveLink: formData.get("driveLink") || undefined,
         }
 
         const validatedFields = formSchema.safeParse(rawData)
@@ -54,7 +54,7 @@ export async function registerForEvent(prevState: RegistrationState, formData: F
             return { error: "Invalid lead details. Please check your inputs." }
         }
 
-        const { leadName, leadEmail, leadRoll, leadPhone, leadBranch, leadYear, teamName, eventSlug,driveLink} = validatedFields.data
+        const { leadName, leadEmail, leadRoll, leadPhone, leadBranch, leadYear, teamName, eventSlug, driveLink } = validatedFields.data
 
         const members = []
         let memberIndex = 0
